@@ -19,6 +19,9 @@ class Vertex:
     def get_weight(self, neighbor):
         return self.adjacent[neighbor]
 
+    def get_degree(self):
+        return len(self.get_connections())
+
 class Graph:
     def __init__(self):
         self.vert_dict = {}
@@ -72,6 +75,7 @@ if __name__ == '__main__':
     g.add_edge('d', 'e', 6)
     g.add_edge('e', 'f', 9)
 
+
     #### GET CONNECTIONS ####
     for v in g:
         for w in v.get_connections():
@@ -80,4 +84,5 @@ if __name__ == '__main__':
             print ('( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w)))
     #### GET ADJACENCE LIST ####
     for v in g:
-        print ('g.vert_dict[%s]=%s' %(v.get_id(), g.vert_dict[v.get_id()]))
+        print ('g.vert_dict[%s]= %s' %(v.get_id(), g.vert_dict[v.get_id()]))
+        print('degree(%s) = %s' %(v.get_id(), v.get_degree()))
