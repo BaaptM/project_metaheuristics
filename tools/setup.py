@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # *-* coding: utf-8 -*-
 #
-""" permet de creer une distribution du code sur les metaheuristics """
+# permet de creer une distribution du code sur les metaheuristics
 
 from distutils.core import setup
 setup(name='Tools',
