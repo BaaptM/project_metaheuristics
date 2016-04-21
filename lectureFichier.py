@@ -29,15 +29,13 @@ if __name__ == '__main__':
 				cpt+=1
 			else:
 				if(cpt == 1): ##### 1er commentaire : nbSommets nbAretes
-					nbVertices = letter[0]
-					nbEdges = letter[2]
+					nbVertices, nbEdges = lines[i].split()
 				if(cpt == 2): ##### 2eme commentaire : dmin dmax
-					dmin = letter[0]
-					dmax = letter[2]
+					dmin, dmax = lines[i].split()
 				if(cpt == 3): ##### 3eme commentaire : from to weight
-					g.add_edge(letter[0], letter[2], int(letter[4]))
+					g.add_edge(lines[i].split()[0], lines[i].split()[1], int(lines[i].split()[2]))
 				if(cpt == 4):
-					degreeFileList.append(int(letter[2]))
+					degreeFileList.append(int(lines[i].split()[1]))
 
 		######## ASSERT DEG == DEG FILE #########
 		for i in range(0,len(degreeFileList)):
