@@ -1,4 +1,6 @@
 #!/usr/local/bin/pyhon3
+import sys
+
 class Vertex:
     def __init__(self, node):
         self.id = node
@@ -54,6 +56,23 @@ class Graph:
     def get_vertices(self):
         return self.vert_dict.keys()
 
+    def get_dMin(self):
+        min = sys.maxsize
+        for v in self.vert_dict.values():
+            v_degree = v.get_degree()
+            if (v_degree < min):
+                min = v_degree
+        return min
+
+    def get_dMax(self):
+        max = 0
+        for v in self.vert_dict.values():
+            v_degree = v.get_degree()
+            if (v_degree > max):
+                max = v_degree
+        return max
+
+
 if __name__ == '__main__':
 ###### TEST ######
     g = Graph()
@@ -75,14 +94,13 @@ if __name__ == '__main__':
     g.add_edge('d', 'e', 6)
     g.add_edge('e', 'f', 9)
 
-
-    #### GET CONNECTIONS ####
-    for v in g:
-        for w in v.get_connections():
-            vid = v.get_id()
-            wid = w.get_id()
-            print ('( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w)))
-    #### GET ADJACENCE LIST ####
-    for v in g:
-        print ('g.vert_dict[%s]= %s' %(v.get_id(), g.vert_dict[v.get_id()]))
-        print('degree(%s) = %s' %(v.get_id(), v.get_degree()))
+    ##### GET CONNECTIONS ####
+    #for v in g:
+    #    for w in v.get_connections():
+    #        vid = v.get_id()
+    #        wid = w.get_id()
+    #        print ('( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w)))
+    ##### GET ADJACENCE LIST ####
+    #for v in g:
+    #    print ('g.vert_dict[%s]= %s' %(v.get_id(), g.vert_dict[v.get_id()]))
+    #    print('degree(%s) = %s' %(v.get_id(), v.get_degree()))
