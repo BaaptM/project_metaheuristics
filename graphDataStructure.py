@@ -1,6 +1,9 @@
 #!/usr/local/bin/pyhon3
 import sys
 
+from tools.enumGraphe import *
+
+
 class Vertex:
     def __init__(self, node):
         self.id = node
@@ -114,10 +117,50 @@ class Graph:
     #                paths.append(p)
     #    return paths
 
+    def get_best_sol_enumeration(self,nbK):
+        # function to partition with the less interclasses weight by enumeration
+        # @return the best solution
 
-#todo check if vertex is in graph
-#todo do not do check vertex of the last classe
+        #get all solutions
+        potentiel_sols = getSoluces(self.get_nbVertices(),nbK)
+
+        #init current_sol at the first
+        current_sol = []
+        current_sol.append(potentiel_sols[0])
+        current_weight = get_weight_inter(self.sol_to_classes(current_sol[0]))
+
+        #evaluate all sol
+        for sol in potentiel_sols[1:]: #enum all valid sol
+            actual_weight = get_weight_inter(self.sol_to_classes(sol))
+            if  actual_weight < current_weight:
+                current_sol.clear()
+                current_sol.append(sol)
+                current_weight = actual_weight
+            elif actual_weight == current_weight:
+                current_sol.append(sol)
+        print('minimum weight interclass for %s Classes is %s' %(nbK, current_weight))
+        return current_sol
+
+    def sol_to_classes(self, sol):
+        #convert sol like [[0,1,2][3,4]] to classes like [[a,b,c][d,e]]
+
+        classes = []
+        for classe in sol:
+            build_classe = []
+            for vertex_num in classe:
+                build_classe.append(self.get_vertex(list(self.vert_dict.keys())[vertex_num]))
+            classes.append(build_classe)
+        return classes
+
+######### Functions ###########
 def get_weight_inter(classes):
+    # function to sum the weight of interclass edges
+    # @return the weight
+
+    # todo check if all vertex is in the same graph
+    # todo check if all vertex have a classe
+    # todo do not do check vertex of the last classe
+
     edgeDone = [()];
     sum = 0;
     for classe in classes:
@@ -170,11 +213,14 @@ if __name__ == '__main__':
         print ('graph.vert_dict[%s]= %s' %(vertex1.get_id(), graph.vert_dict[vertex1.get_id()]))
         print('degree(%s) = %s' %(vertex1.get_id(), vertex1.get_degree()))
 
-    #### GET  WEIGHT INTER
+    #### GET WEIGHT INTERCLASSES ####
     classe1 = [graph.get_vertex('a'), graph.get_vertex('e')]
     classe2 = [graph.get_vertex('b'), graph.get_vertex('d')]
     classe3 = [graph.get_vertex('c'), graph.get_vertex('f')]
     classes = [classe1,classe2, classe3]
 
     weight_inter_classes = get_weight_inter(classes)
-    print(weight_inter_classes)
+    print('weight interclasses intended 17 have got : %s' %weight_inter_classes)
+
+    #### ENUM WITH get_sol FUNCTION ####
+    print(graph.get_best_sol_enumeration(3))
