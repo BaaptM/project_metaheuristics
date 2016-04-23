@@ -73,7 +73,7 @@ class Graph:
         return max
 
     def get_nbVertices(self):
-        return g.num_vertices
+        return graph.num_vertices
 
     def get_nb_Edges(self):
         nb_edges = 0
@@ -115,41 +115,66 @@ class Graph:
     #    return paths
 
 
+#todo check if vertex is in graph
+#todo do not do check vertex of the last classe
+def get_weight_inter(classes):
+    edgeDone = [()];
+    sum = 0;
+    for classe in classes:
+        for vertex in classe:
+            for neighboor in vertex.get_connections():
+                if edgeDone.count((vertex,neighboor)) == 0 and edgeDone.count((neighboor,vertex)) == 0 and classe.count(neighboor) == 0:
+                    edgeDone.append((vertex,neighboor))
+                    sum += vertex.get_weight(neighboor)
+    return sum
+
+
+
+
 
 if __name__ == '__main__':
 ###### TEST ######
-    g = Graph()
+    graph = Graph()
 
-    g.add_vertex('a')
-    g.add_vertex('b')
-    g.add_vertex('c')
-    g.add_vertex('d')
-    g.add_vertex('e')
-    g.add_vertex('f')
+    graph.add_vertex('a')
+    graph.add_vertex('b')
+    graph.add_vertex('c')
+    graph.add_vertex('d')
+    graph.add_vertex('e')
+    graph.add_vertex('f')
 
-    g.add_edge('a', 'b', 1)
-    g.add_edge('a', 'c', 2)
-    g.add_edge('a', 'e', 3)
-    g.add_edge('b', 'f', 4)
-    g.add_edge('b', 'd', 5)
-    g.add_edge('c', 'd', 4)
-    g.add_edge('c', 'b', 3)
-    g.add_edge('d', 'e', 2)
-    g.add_edge('e', 'f', 1)
+    graph.add_edge('a', 'b', 1)
+    graph.add_edge('a', 'c', 2)
+    graph.add_edge('a', 'e', 3)
+    graph.add_edge('b', 'f', 4)
+    graph.add_edge('b', 'd', 5)
+    graph.add_edge('c', 'd', 4)
+    graph.add_edge('c', 'b', 3)
+    graph.add_edge('d', 'e', 2)
+    graph.add_edge('e', 'f', 1)
 
-    #print("path :",g.find_all_paths('a','c'))
-    #graph = g.vert_dict
+    #print("path :",graph.find_all_paths('a','c'))
+    #graph = graph.vert_dict
     #for v in graph['a'].adjacent:
     #    print(v.get_id())
 
 
     #### GET CONNECTIONS ####
-    for v in g:
-        for w in v.get_connections():
-            vid = v.get_id()
-            wid = w.get_id()
-            print ('( %s , %s, %3d)'  % ( vid, wid, v.get_weight(w)))
+    for vertex1 in graph:
+        for vertex2 in vertex1.get_connections():
+            vertex1Id = vertex1.get_id()
+            vertex2Id = vertex2.get_id()
+            print ('( %s , %s, %3d)'  % ( vertex1Id, vertex2Id, vertex1.get_weight(vertex2)))
     #### GET ADJACENCE LIST ####
-    for v in g:
-        print ('g.vert_dict[%s]= %s' %(v.get_id(), g.vert_dict[v.get_id()]))
-        print('degree(%s) = %s' %(v.get_id(), v.get_degree()))
+    for vertex1 in graph:
+        print ('graph.vert_dict[%s]= %s' %(vertex1.get_id(), graph.vert_dict[vertex1.get_id()]))
+        print('degree(%s) = %s' %(vertex1.get_id(), vertex1.get_degree()))
+
+    #### GET  WEIGHT INTER
+    classe1 = [graph.get_vertex('a'), graph.get_vertex('e')]
+    classe2 = [graph.get_vertex('b'), graph.get_vertex('d')]
+    classe3 = [graph.get_vertex('c'), graph.get_vertex('f')]
+    classes = [classe1,classe2, classe3]
+
+    weight_inter_classes = get_weight_inter(classes)
+    print(weight_inter_classes)
