@@ -2,20 +2,14 @@ import random
 import math
 import logging
 
-def P(prev_score,next_score,temperature):
-    if next_score > prev_score:
-        return 1.0
-    else:
-        return math.exp( -abs(next_score-prev_score)/temperature )
-
+#### struct to store best solution & score known
+#### so ObjectiveFunction is a callable function and also store best sol
 class ObjectiveFunction:
-    '''class to wrap an objective function and 
-    keep track of the best solution evaluated'''
     def __init__(self,objective_function):
         self.objective_function=objective_function
         self.best=None
         self.best_score=None
-    
+
     def __call__(self,solution):
         score=self.objective_function(solution)
         if self.best is None or score > self.best_score:
@@ -24,6 +18,16 @@ class ObjectiveFunction:
             logging.info('new best score: %f',self.best_score)
         return score
 
+#### probabilistically choosing a neighbour
+#### return acceptation probability
+def P(prev_score,next_score,temperature):
+    if next_score > prev_score:
+        return 1.0
+    else:
+        return math.exp( -abs(next_score-prev_score)/temperature )
+
+#### cooling schedule
+#### get start_temp cooling by alpha=[0,1]
 def kirkpatrick_cooling(start_temp,alpha):
     T=start_temp
     while True:
@@ -31,8 +35,7 @@ def kirkpatrick_cooling(start_temp,alpha):
         T=alpha*T
 
 def anneal(init_function,move_operator,objective_function,max_evaluations,start_temp,alpha):
-    
-    # wrap the objective function (so we record the best)
+
     objective_function=ObjectiveFunction(objective_function)
     
     current=init_function()
@@ -45,7 +48,7 @@ def anneal(init_function,move_operator,objective_function,max_evaluations,start_
     
     for temperature in cooling_schedule:
         done = False
-        # examine moves around our current position
+        # examine moves around current position
         for next in move_operator(current):
             if num_evaluations >= max_evaluations:
                 done=True
@@ -61,8 +64,7 @@ def anneal(init_function,move_operator,objective_function,max_evaluations,start_
                 current=next
                 current_score=next_score
                 break
-        # see if completely finished
-        if done: break
+        if done: break # no better solution
     
     best_score=objective_function.best_score
     best=objective_function.best
