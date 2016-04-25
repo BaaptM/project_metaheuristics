@@ -126,6 +126,7 @@ class Graph:
 
         #init current_sol at the first
         current_sol = []
+        #current_sol = potentiel_sols
         current_sol.append(potentiel_sols[0])
         current_weight = get_weight_inter(self.sol_to_classes(current_sol[0]))
 
@@ -161,11 +162,12 @@ def get_weight_inter(classes):
     # todo check if all vertex have a classe
     # todo do not do check vertex of the last classe
 
-    edgeDone = [()];
-    sum = 0;
+    edgeDone = [()]
+    sum = 0
     for classe in classes:
         for vertex in classe:
             for neighboor in vertex.get_connections():
+
                 if edgeDone.count((vertex,neighboor)) == 0 and edgeDone.count((neighboor,vertex)) == 0 and classe.count(neighboor) == 0:
                     edgeDone.append((vertex,neighboor))
                     sum += vertex.get_weight(neighboor)
@@ -203,15 +205,15 @@ if __name__ == '__main__':
 
 
     #### GET CONNECTIONS ####
-    for vertex1 in graph:
-        for vertex2 in vertex1.get_connections():
-            vertex1Id = vertex1.get_id()
-            vertex2Id = vertex2.get_id()
-            print ('( %s , %s, %3d)'  % ( vertex1Id, vertex2Id, vertex1.get_weight(vertex2)))
-    #### GET ADJACENCE LIST ####
-    for vertex1 in graph:
-        print ('graph.vert_dict[%s]= %s' %(vertex1.get_id(), graph.vert_dict[vertex1.get_id()]))
-        print('degree(%s) = %s' %(vertex1.get_id(), vertex1.get_degree()))
+    #for vertex1 in graph:
+    #    for vertex2 in vertex1.get_connections():
+    #        vertex1Id = vertex1.get_id()
+    #        vertex2Id = vertex2.get_id()
+    #        print ('( %s , %s, %3d)'  % ( vertex1Id, vertex2Id, vertex1.get_weight(vertex2)))
+    ##### GET ADJACENCE LIST ####
+    #for vertex1 in graph:
+    #    print ('graph.vert_dict[%s]= %s' %(vertex1.get_id(), graph.vert_dict[vertex1.get_id()]))
+    #    print('degree(%s) = %s' %(vertex1.get_id(), vertex1.get_degree()))
 
     #### GET WEIGHT INTERCLASSES ####
     classe1 = [graph.get_vertex('a'), graph.get_vertex('e')]
@@ -224,3 +226,9 @@ if __name__ == '__main__':
 
     #### ENUM WITH get_sol FUNCTION ####
     print(graph.get_best_sol_enumeration(3))
+
+
+
+
+
+
