@@ -84,39 +84,6 @@ class Graph:
             nb_edges += len(v.get_connections())
         return nb_edges//2
 
-    def find_path(self, start_vertex, end_vertex, path=[]):
-        graph = self.vert_dict
-        path += [start_vertex]
-        if (start_vertex == end_vertex):
-            return path
-        if (start_vertex not in graph):
-            return None
-        for vertex in graph[start_vertex].adjacent:
-            if vertex.get_id() not in path:
-                extended_path = self.find_path(vertex.get_id(),
-                                               end_vertex,
-                                               path)
-                if extended_path:
-                    return extended_path
-        return None
-
-    #def find_all_paths(self, start_vertex, end_vertex, path=[]):
-    #    graph = self.vert_dict
-    #    path += [start_vertex]
-    #    if (start_vertex == end_vertex):
-    #        return path
-    #    if (start_vertex not in graph):
-    #        return []
-    #    paths = []
-    #    for vertex in graph[start_vertex].adjacent:
-    #        if vertex.get_id() not in path:
-    #            extended_paths = self.find_all_paths(vertex.get_id(),
-    #                                                 end_vertex,
-    #                                                 path)
-    #            for p in extended_paths:
-    #                paths.append(p)
-    #    return paths
-
     def get_best_sol_enumeration(self,nbK):
         # function to partition with the less interclasses weight by enumeration
         # @return the best solution
@@ -158,7 +125,7 @@ def get_weight_inter(classes):
     # function to sum the weight of interclass edges
     # @return the weight
 
-    # todo check if all vertex is in the same graph
+    # todo check if all vertices are in the same graph
     # todo check if all vertex have a classe
     # todo do not do check vertex of the last classe
 
