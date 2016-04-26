@@ -4,6 +4,7 @@ import random
 import hillclimb as hc
 from graphstructure.lectureFichier import *
 from tools.enumGraphe import *
+from tools.voisinageGraphe import *
 
 log = logging.getLogger(__name__)
 
@@ -59,12 +60,25 @@ def test_peak_hillclimb():
     assert best_score == 100
 
 
-def test_file_hillcimb(graph, nbK):
+def test_file_hillcimb(graph, nbK, max_evaluations):
+    def init_function():
+        return random.choice(getSoluces(graph.get_nbVertices(), nbK))
+        #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
+
+    num_evaluations, best_score, best = hc.hillclimb(init_function, pick_gen, graph.get_weight_inter,
+                                                     max_evaluations)
+    log.info(best)
+    log.info(graph.get_weight_inter(best))
+
+
+def test_file_hillcimb_restart(graph, nbK, max_evaluations):
     def init_function():
         return random.choice(getSoluces(graph.get_nbVertices(), nbK))
 
-    def move_operator():
-        return
+    num_evaluations, best_score, best = hc.hillclimb_and_restart(init_function, pick_gen, graph.get_weight_inter,
+                                                     max_evaluations)
+    log.info(best)
+    log.info(graph.get_weight_inter(best))
 
 
 if __name__ == '__main__':
@@ -73,6 +87,10 @@ if __name__ == '__main__':
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    test_simple_hillclimb()
-    test_peak_hillclimb()
+    #test_simple_hillclimb()
+    #test_peak_hillclimb()
+    reader = Reader('../../fichiersGraphes/vingtSommets.txt')
+    reader.readFile()
+    test_file_hillcimb(reader.g, 2, 5000)
+    #test_file_hillcimb_restart(reader.g, 2, 10000)
 
