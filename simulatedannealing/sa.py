@@ -12,7 +12,7 @@ class ObjectiveFunction:
 
     def __call__(self,solution):
         score=self.objective_function(solution)
-        if self.best is None or score > self.best_score:
+        if self.best is None or score < self.best_score:
             self.best_score=score
             self.best=solution
             log.info('new best score: %f' % self.best_score)
