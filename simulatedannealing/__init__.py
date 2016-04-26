@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Implementation of simulated annealing algorithm
 # anneal(init_function,move_operator,objective_function,max_evaluations,start_temp,alpha)
 # where init_function() – the function used to create our initial solution (random? ; hillcimb output?)
