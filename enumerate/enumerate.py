@@ -1,4 +1,5 @@
 from graphDataStructure import *
+import lectureFichier as lf
 from tools.enumGraphe import *
 
 import logging
@@ -85,6 +86,20 @@ if __name__ == '__main__':
     graph.add_edge('e', 'f', 1)
 
     #### ENUM WITH get_sol FUNCTION ####
-    print(get_best_sol_enumeration(graph,graph.get_weight_inter,2 ,0))
+    #print(get_best_sol_enumeration(graph,graph.get_weight_inter,2 ,0))
+
+    reader = lf.Reader('../../fichiersGraphes/dixSommets.txt')
+    reader.readFile()
+    import timeit
+
+    start = timeit.default_timer()
+
+    print(get_best_sol_enumeration(reader.g, reader.g.get_weight_inter, 5, 2))
+
+    stop = timeit.default_timer()
+
+    print(stop - start)
+
+
 
 
