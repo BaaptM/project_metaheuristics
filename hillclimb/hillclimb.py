@@ -1,4 +1,7 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import logging
+log = logging.getLogger(__name__)
 
 def hillclimb(init_function,move_operator,objective_function,max_evaluations):
 
@@ -6,8 +9,8 @@ def hillclimb(init_function,move_operator,objective_function,max_evaluations):
     best_score=objective_function(best)
     
     num_evaluations=1
-    
-    logging.info('hillclimb started: score=%f',best_score)
+
+    log.info('hillclimb started: score=%f' % best_score)
     
     while num_evaluations < max_evaluations:
         # examine moves around current position
@@ -28,7 +31,7 @@ def hillclimb(init_function,move_operator,objective_function,max_evaluations):
         if not move_made:
             break # couldn't find a better move
     
-    logging.info('hillclimb finished: num_evaluations=%d, best_score=%f',num_evaluations,best_score)
+    log.info('hillclimb finished: num_evaluations=%d , best_score=%f' % (num_evaluations, best_score))
     return (num_evaluations,best_score,best)
 
 
@@ -40,8 +43,8 @@ def hillclimb_and_restart(init_function,move_operator,objective_function,max_eva
     num_evaluations=0
     while num_evaluations < max_evaluations:
         remaining_evaluations=max_evaluations-num_evaluations
-        
-        logging.info('(re)starting hillclimb %d/%d remaining',remaining_evaluations,max_evaluations)
+
+        log.info('(re)starting hillclimb %d/%d remaining' % (remaining_evaluations,max_evaluations))
         evaluated,score,found=hillclimb(init_function,move_operator,objective_function,remaining_evaluations)
         
         num_evaluations+=evaluated
@@ -50,3 +53,5 @@ def hillclimb_and_restart(init_function,move_operator,objective_function,max_eva
             best=found
         
     return (num_evaluations,best_score,best)
+
+

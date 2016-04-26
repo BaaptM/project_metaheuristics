@@ -1,7 +1,7 @@
 import random
 import math
 import logging
-
+log = logging.getLogger(__name__)
 #### struct to store best solution & score known
 #### so ObjectiveFunction is a callable function and also store best sol
 class ObjectiveFunction:
@@ -15,7 +15,7 @@ class ObjectiveFunction:
         if self.best is None or score > self.best_score:
             self.best_score=score
             self.best=solution
-            logging.info('new best score: %f',self.best_score)
+            log.info('new best score: %f' % self.best_score)
         return score
 
 #### probabilistically choosing a neighbour
@@ -44,7 +44,7 @@ def anneal(init_function,move_operator,objective_function,max_evaluations,start_
     
     cooling_schedule=kirkpatrick_cooling(start_temp,alpha)
     
-    logging.info('anneal started: score=%f',current_score)
+    log.info('anneal started: score=%f' % current_score)
     
     for temperature in cooling_schedule:
         done = False
@@ -68,6 +68,6 @@ def anneal(init_function,move_operator,objective_function,max_evaluations,start_
     
     best_score=objective_function.best_score
     best=objective_function.best
-    logging.info('final temperature: %f',temperature)
-    logging.info('anneal finished: num_evaluations=%d, best_score=%f',num_evaluations,best_score)
+    log.info('final temperature: %f' % temperature)
+    log.info('anneal finished: num_evaluations=%d, best_score=%f' % (num_evaluations,best_score))
     return (num_evaluations,best_score,best)
