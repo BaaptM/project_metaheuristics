@@ -88,7 +88,7 @@ class Graph:
         for classe in sol:
             build_classe = []
             for vertex_num in classe:
-                build_classe.append(self.get_vertex(list(self.vert_dict.keys())[vertex_num]))
+                build_classe.append(self.get_vertex(list(sorted(self.vert_dict.keys()))[vertex_num]))
             classes.append(build_classe)
         return classes
 
@@ -155,7 +155,7 @@ if __name__ == '__main__':
     #    print('degree(%s) = %s' %(vertex1.get_id(), vertex1.get_degree()))
 
     #### GET WEIGHT INTERCLASSES ####
-    classes = [[0,4],[1,3],[2,5]]
+    classes = [[0, 1, 2, 3], [4, 5]]
 
     weight_inter_classes = graph.get_weight_inter(classes)
     print('weight interclasses intended 17 have got : %s' %weight_inter_classes)

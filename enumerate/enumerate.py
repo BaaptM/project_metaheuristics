@@ -1,8 +1,11 @@
 from graphDataStructure import *
 from tools.enumGraphe import *
 
+import logging
+log = logging.getLogger(__name__)
 
-def get_best_sol_enumeration(graph, objective_function, nbK, delta):
+
+def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
     # function to partition with the less interclasses weight by enumeration
     # @param graph the graph to be partitioned
     # @param nbK number of classes
@@ -15,23 +18,53 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta):
     # init current_sol at the first
     current_sol = []
     # current_sol = potentiel_sols
-    current_sol.append(potentiel_sols[0])
-    current_weight = objective_function(current_sol[0])
+    i = 0
+    while(len(current_sol) == 0 and not i >= len(potentiel_sols)):
+        max_delta = get_max_delta(potentiel_sols[i])
+        if max_delta <= delta_max:
+            current_sol.append(potentiel_sols[i])
+            current_weight = objective_function(current_sol[0])
+        i += 1
 
     # evaluate all sol
-    for sol in potentiel_sols[1:]:  # enum all valid sol
-        actual_weight = objective_function(sol)
-        if actual_weight < current_weight:
-            current_sol.clear()
-            current_sol.append(sol)
-            current_weight = actual_weight
-        elif actual_weight == current_weight:
-            current_sol.append(sol)
-    print('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
+    if(len(current_sol) == 0):
+        log.info('no possible solutions with this delta')
+    else:
+        for sol in potentiel_sols:  # enum all valid sol
+            max_delta = get_max_delta(sol)
+            if max_delta <= delta_max:
+                actual_weight = graph.get_weight_inter(sol)
+                if actual_weight < current_weight:
+                    del current_sol[:]
+                    current_sol.append(sol)
+                    current_weight = actual_weight
+                elif actual_weight == current_weight:
+                    contain = True
+                    for classe in sol:
+                        for csol in current_sol:
+                            contain = classe in csol
+                    if not contain:
+                        current_sol.append(sol)
+        print('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
     return current_sol
+
+def get_max_delta(sol):
+    max_delta = 0
+    for classe1 in sol:
+        for classe2 in sol:
+            delta = abs(len(classe1) - len(classe2))
+            if max_delta < delta:
+                max_delta = delta
+    return max_delta
 
 if __name__ == '__main__':
 ###### TEST ######
+
+    import logging
+    import sys
+
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+
     graph = Graph()
 
     graph.add_vertex('a')
@@ -52,6 +85,6 @@ if __name__ == '__main__':
     graph.add_edge('e', 'f', 1)
 
     #### ENUM WITH get_sol FUNCTION ####
-    print(get_best_sol_enumeration(graph,graph.get_weight_inter,3 ,10))
+    print(get_best_sol_enumeration(graph,graph.get_weight_inter,2 ,0))
 
 
