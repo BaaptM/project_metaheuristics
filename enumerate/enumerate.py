@@ -20,16 +20,16 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
     # @return the best solution
 
     # get all solutions
-    potentiel_sols = getSoluces(graph.get_nbVertices(), nbK)
+    potential_sols = getSoluces(graph.get_nbVertices(), nbK)
 
     # init current_sol at the first
     current_sol = []
-    # current_sol = potentiel_sols
+    # current_sol = potential_sols
     i = 0
-    while(len(current_sol) == 0 and not i >= len(potentiel_sols)):
-        max_delta = get_max_delta(potentiel_sols[i])
+    while(len(current_sol) == 0 and not i >= len(potential_sols)):
+        max_delta = get_max_delta(potential_sols[i])
         if max_delta <= delta_max:
-            current_sol.append(potentiel_sols[i])
+            current_sol.append(potential_sols[i])
             current_weight = objective_function(current_sol[0])
         i += 1
 
@@ -37,7 +37,7 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
     if(len(current_sol) == 0):
         log.info('no possible solutions with this delta')
     else:
-        for sol in potentiel_sols:  # enum all valid sol
+        for sol in potential_sols:  # enum all valid sol
             max_delta = get_max_delta(sol)
             if max_delta <= delta_max:
                 actual_weight = graph.get_weight_inter(sol)
