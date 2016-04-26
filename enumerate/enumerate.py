@@ -40,7 +40,7 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
         for sol in potential_sols:  # enum all valid sol
             max_delta = get_max_delta(sol)
             if max_delta <= delta_max:
-                actual_weight = graph.get_weight_inter(sol)
+                actual_weight = objective_function(sol)
                 if actual_weight < current_weight:
                     del current_sol[:]
                     current_sol.append(sol)
