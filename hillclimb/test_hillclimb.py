@@ -61,7 +61,7 @@ def test_peak_hillclimb():
     assert best_score == 100
 
 
-def test_file_hillcimb(graph, nbK, max_evaluations):
+def test_file_hillcimb(graph, nbK):
     def init_function():
         return random.choice(getSoluces(graph.get_nbVertices(), nbK))
         #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
@@ -72,7 +72,7 @@ def test_file_hillcimb(graph, nbK, max_evaluations):
     log.info(graph.get_weight_inter(best))
 
 
-def test_file_hillcimb_restart(graph, nbK, max_evaluations):
+def test_file_hillcimb_restart(graph, nbK):
     def init_function():
         return random.choice(getSoluces(graph.get_nbVertices(), nbK))
 
@@ -90,8 +90,8 @@ if __name__ == '__main__':
 
     #test_simple_hillclimb()
     #test_peak_hillclimb()
-    reader = Reader('../fichiersGraphes/vingtSommets.txt')
+    reader = Reader('../../fichiersGraphes/vingtSommets.txt')
     reader.readFile()
-    test_file_hillcimb(reader.g, 2, 5000)
+    test_file_hillcimb(reader.g, 2)
     #test_file_hillcimb_restart(reader.g, 2, 10000)
 
