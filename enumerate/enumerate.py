@@ -20,40 +20,35 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
     # @return the best solution
 
     # get all solutions
-    potential_sols = getSoluces(graph.get_nbVertices(), nbK)
+    potential_sols = validate_solution(getSoluces(graph.get_nbVertices(), nbK), delta_max)
 
     # init current_sol at the first
     current_sol = []
-    # current_sol = potential_sols
-    i = 0
-    while(len(current_sol) == 0 and not i >= len(potential_sols)):
-        max_delta = get_max_delta(potential_sols[i])
-        if max_delta <= delta_max:
-            current_sol.append(potential_sols[i])
-            current_weight = objective_function(current_sol[0])
-        i += 1
+    # current_sol = first of potential_sols
+    if(len(potential_sols) > 0):
+        current_sol.append(potential_sols[0])
+        current_weight = objective_function(current_sol[0])
 
     # evaluate all sol
     if(len(current_sol) == 0):
         log.info('no possible solutions with this delta')
     else:
         for sol in potential_sols:  # enum all valid sol
-            max_delta = get_max_delta(sol)
-            if max_delta <= delta_max:
-                actual_weight = objective_function(sol)
-                if actual_weight < current_weight:
-                    del current_sol[:]
+            actual_weight = objective_function(sol)
+            if actual_weight < current_weight:
+                del current_sol[:]
+                current_sol.append(sol)
+                current_weight = actual_weight
+            elif actual_weight == current_weight:
+                contain = True
+                for classe in sol:
+                    for csol in current_sol:
+                        contain = classe in csol
+                if not contain:
                     current_sol.append(sol)
-                    current_weight = actual_weight
-                elif actual_weight == current_weight:
-                    contain = True
-                    for classe in sol:
-                        for csol in current_sol:
-                            contain = classe in csol
-                    if not contain:
-                        current_sol.append(sol)
         print('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
     return current_sol
+
 
 def get_max_delta(sol):
     max_delta = 0
@@ -63,6 +58,14 @@ def get_max_delta(sol):
             if max_delta < delta:
                 max_delta = delta
     return max_delta
+
+
+def validate_solution(solutions, delta):
+    valid_sol = []
+    for sol in solutions:
+        if get_max_delta(sol) < delta:
+            valid_sol.append(sol)
+    return valid_sol
 
 if __name__ == '__main__':
 ###### TEST ######
