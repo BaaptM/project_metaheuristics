@@ -98,12 +98,11 @@ class Graph:
 
         # todo check if all vertices are in the same graph
         # todo check if all vertex have a classe
-        # todo do not do check vertex of the last classe
 
         classes = self.sol_to_classes(solutions)
         edgeDone = [()]
         sum = 0
-        for classe in classes:
+        for classe in classes[:-1]:
             for vertex in classe:
                 for neighboor in vertex.get_connections():
 
