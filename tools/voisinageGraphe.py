@@ -62,8 +62,8 @@ def delta_swap_gen(partition):
     # @return: le mouvement suivant
 
     _sz = len(partition)
-    for i in xrange(_sz-1):
-        for j in xrange(i+1,_sz):
+    for i in range(_sz-1):
+        for j in range(i+1,_sz):
             for x in partition[i]:
                 for y in partition[j] :
                     yield ( (i,j),(x,y) )
@@ -119,8 +119,8 @@ def delta_pick_gen(partition):
     # @return: le mouvement suivant
 
     _sz = len(partition)
-    for i in xrange(_sz):
-        for j in xrange(_sz):
+    for i in range(_sz):
+        for j in range(_sz):
             if i == j : continue
             for x in partition[i]:
                 yield ( (i,j), x )
@@ -220,7 +220,7 @@ def nth_gen(name,szVoisinage,partition,numBloc,nBloc):
     # @param nBloc: le nombre de blocs
     # @return: le generateur associe
 
-    assert(numBloc in xrange(nBloc))
+    assert(numBloc in range(nBloc))
     _slice = szVoisinage / nBloc
     _meth = name+'_gen'
     _start = _slice * numBloc
@@ -280,38 +280,39 @@ def __sweep_size(dim,score):
 
 if __name__ == '__main__' :
     # une partition
-    p = [ range(3),['a','b'],range(5,9) ]
+    p = [ list(range(3)),['a','b'],list(range(5,9)) ]
     vsize = make_dico_size(p)
     
     print('p> %r' % p)
     print('swap> %r' %swap_one(p))
     swap_v = swap_gen(p)
-    print('il y a %d possibilités, attendu %d ' % (len(list(swap_v))),
-                                                   vsize['swap'])
+    print('il y a %d possibilités, attendu %d ' % ((len(list(swap_v))),
+                                                   vsize['swap']))
     print('pick> %r' % pick_one(p))
     pickNdrop_v = pick_gen(p)
-    print('il y a %d possibilités, attendu %d ' % (len(list(pickNdrop_v))),
-                                                   vsize['pick'])
+    print('il y a %d possibilités, attendu %d ' % ((len(list(pickNdrop_v))),
+                                                   vsize['pick']))
     print('sweep> %r' % sweep_one(p))
     sweep_v = sweep_gen(p)
-    print('il y a %d possibilités, attendu %d ' % (len(list(sweep_v))),
-                                                   vsize['sweep'])
+    print('il y a %d possibilités, attendu %d ' % ((len(list(sweep_v))),
+                                                   vsize['sweep']))
 
     # on cree les générateurs par blocs
     nBloc = 5
     gen_v = {}
-    for key in vsize :
-        gen_v[key] = build_gen(key,vsize[key],p,nBloc)
+    #for i,key in enumerate(vsize) :
+     #   gen_v[i] = build_gen(key,vsize[i],p,nBloc)
 
     # on crée le dernier générateur
-    last_generator = {}
-    for key in vsize :
-        last_generator[key] = nth_gen(key,vsize[key],p,nBloc-1,nBloc)
-        
-    for key in gen_v :
-        v = [len(list(x)) for x in gen_v[key]]
-        print('%s : %r got %d expected %d' % (key,v,sum(v),vsize[key]))
-        # on verifie que le dernier de gen_v[key] est last_generator[key]
-        # verification sur la taille seulement
-        assert (len(list(last_generator[key])) == v[-1])
-        print('.')
+    #last_generator = {}
+    #for i,key in enumerate(vsize) :
+    #    print(vsize.keys())
+    #    list((last_generator.keys()[#i])) = nth_gen(key,list(vsize.keys()[i]),p,nBloc-1,nBloc)
+    #
+    #for i,key in enumerate(gen_v) :
+    #    v = [len(list(x)) for x in gen_v[i]]
+    #    print('%s : %r got %d expected %d' % (key,v,sum(v),vsize[i]))
+    #    # on verifie que le dernier de gen_v[key] est last_generator[key]
+    #    # verification sur la taille seulement
+    #    assert (len(list(last_generator[i])) == v[-1])
+    #    print('.')

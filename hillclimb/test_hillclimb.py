@@ -59,11 +59,9 @@ def test_peak_hillclimb():
     assert best_score == 100
 
 
-def test_file_hillcimb(file, nbK):
-    reader = Reader(file)
-    reader.readFile()
+def test_file_hillcimb(graph, nbK):
     def init_function():
-        return random.choice(getSoluces(reader.g.get_nbVertices(), nbK))
+        return random.choice(getSoluces(graph.get_nbVertices(), nbK))
 
     def move_operator():
         return
