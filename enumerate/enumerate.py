@@ -40,7 +40,7 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
                 current_sol.append(sol)
                 current_weight = actual_weight
             elif actual_weight == current_weight:
-                contain = True
+                contain = True  #check if the sol is already in current_sol in another classes position
                 for classe in sol:
                     for csol in current_sol:
                         contain = classe in csol

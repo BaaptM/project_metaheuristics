@@ -13,6 +13,7 @@ def objective_function(i):
 
 
 max_evaluations = 500
+delta_max = 2
 
 
 def test_simple_hillclimb():
@@ -30,7 +31,7 @@ def test_simple_hillclimb():
     log.info("-------test_simple_hillclimb()-------")
 
     num_evaluations, best_score, best = hc.hillclimb(init_function, move_operator, objective_function,
-                                                            max_evaluations)
+                                                            max_evaluations, delta_max)
 
     assert num_evaluations == max_evaluations
     assert best == max_evaluations
@@ -52,7 +53,7 @@ def test_peak_hillclimb():
     log.info("-------test_peak_hillclimb()-------")
 
     num_evaluations, best_score, best = hc.hillclimb(init_function, move_operator, objective_function,
-                                                            max_evaluations)
+                                                            max_evaluations, delta_max)
 
     assert num_evaluations <= max_evaluations
     assert num_evaluations == 100
@@ -66,7 +67,7 @@ def test_file_hillcimb(graph, nbK, max_evaluations):
         #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
 
     num_evaluations, best_score, best = hc.hillclimb(init_function, pick_gen, graph.get_weight_inter,
-                                                     max_evaluations)
+                                                     max_evaluations, delta_max)
     log.info(best)
     log.info(graph.get_weight_inter(best))
 
@@ -76,7 +77,7 @@ def test_file_hillcimb_restart(graph, nbK, max_evaluations):
         return random.choice(getSoluces(graph.get_nbVertices(), nbK))
 
     num_evaluations, best_score, best = hc.hillclimb_and_restart(init_function, pick_gen, graph.get_weight_inter,
-                                                     max_evaluations)
+                                                     max_evaluations, delta_max)
     log.info(best)
     log.info(graph.get_weight_inter(best))
 
@@ -89,7 +90,7 @@ if __name__ == '__main__':
 
     #test_simple_hillclimb()
     #test_peak_hillclimb()
-    reader = Reader('../../fichiersGraphes/vingtSommets.txt')
+    reader = Reader('../fichiersGraphes/vingtSommets.txt')
     reader.readFile()
     test_file_hillcimb(reader.g, 2, 5000)
     #test_file_hillcimb_restart(reader.g, 2, 10000)
