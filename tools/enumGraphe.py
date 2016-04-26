@@ -145,7 +145,9 @@ if __name__ == '__main__' :
             print('.'),
             try:
                 _ll = rec2(nClasses,nSommets)
+
                 _l = rec(nClasses,nSommets)
+                print(_l)
                 assert _l  == _ll
                 print('$'),
             except Exception as _e:

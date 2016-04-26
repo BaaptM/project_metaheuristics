@@ -50,6 +50,7 @@ if __name__ == '__main__':
     ######## ASSERT DEG == DEG FILE #########
     for i in range(0, len(reader.degreeFileList)):
         assert (reader.g.get_vertex(str(i + 1)).get_degree() == reader.degreeFileList[i])
+        print('.')
 
     print("------- Paramètre du fichier lu -------")
     print("nbVertices = ", reader.nbVertices, ", nbEdges = ", reader.nbEdges)
