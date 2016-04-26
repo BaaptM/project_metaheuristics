@@ -1,5 +1,4 @@
-import sys
-from graphDataStructure import *
+from graphstructure.graphDataStructure import *
 
 
 def usage(prog):

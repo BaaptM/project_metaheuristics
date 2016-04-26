@@ -1,5 +1,9 @@
-import hillclimb as hc
 import logging
+import random
+
+import hillclimb as hc
+from graphstructure.lectureFichier import *
+from tools.enumGraphe import *
 
 log = logging.getLogger(__name__)
 
@@ -55,6 +59,16 @@ def test_peak_hillclimb():
     assert best_score == 100
 
 
+def test_file_hillcimb(file, nbK):
+    reader = Reader(file)
+    reader.readFile()
+    def init_function():
+        return random.choice(getSoluces(reader.g.get_nbVertices(), nbK))
+
+    def move_operator():
+        return
+
+
 if __name__ == '__main__':
     import logging
     import sys
@@ -63,3 +77,4 @@ if __name__ == '__main__':
 
     test_simple_hillclimb()
     test_peak_hillclimb()
+

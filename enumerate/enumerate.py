@@ -1,8 +1,10 @@
-from graphDataStructure import *
-import lectureFichier as lf
+import logging
+
+from graphstructure import graphDataStructure as gs
+from graphstructure import lectureFichier as lf
+
 from tools.enumGraphe import *
 
-import logging
 log = logging.getLogger(__name__)
 
 
@@ -66,7 +68,7 @@ if __name__ == '__main__':
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
 
-    graph = Graph()
+    graph = gs.Graph()
 
     graph.add_vertex('a')
     graph.add_vertex('b')
@@ -94,7 +96,7 @@ if __name__ == '__main__':
 
     start = timeit.default_timer()
 
-    print(get_best_sol_enumeration(reader.g, reader.g.get_weight_inter, 5, 2))
+    print(get_best_sol_enumeration(reader.g, reader.g.get_weight_inter, 2, 2))
 
     stop = timeit.default_timer()
 
