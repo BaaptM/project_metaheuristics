@@ -21,10 +21,10 @@ class ObjectiveFunction:
 #### probabilistically choosing a neighbour
 #### return acceptation probability
 def P(prev_score,next_score,temperature):
-    if next_score > prev_score:
+    if next_score < prev_score:
         return 1.0
     else:
-        return math.exp( -abs(next_score-prev_score)/temperature )
+        return math.exp( -abs(prev_score-next_score)/temperature )
 
 #### cooling schedule
 #### get start_temp cooling by alpha=[0,1]

@@ -92,6 +92,8 @@ if __name__ == '__main__':
     #test_peak_hillclimb()
     reader = Reader('../../fichiersGraphes/vingtSommets.txt')
     reader.readFile()
+
     test_file_hillcimb(reader.g, 2)
-    #test_file_hillcimb_restart(reader.g, 2, 10000)
+    #test_file_hillcimb_restart(reader.g, 2)
+
 
