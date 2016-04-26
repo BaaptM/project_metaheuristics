@@ -1,5 +1,9 @@
 import logging
-
+import sys
+import os
+DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
+DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
+sys.path.append(DOSSIER_PARENT)
 from graphstructure import graphDataStructure as gs
 from graphstructure import lectureFichier as lf
 
@@ -90,7 +94,7 @@ if __name__ == '__main__':
     #### ENUM WITH get_sol FUNCTION ####
     #print(get_best_sol_enumeration(graph,graph.get_weight_inter,2 ,0))
 
-    reader = lf.Reader('../../fichiersGraphes/dixSommets.txt')
+    reader = lf.Reader('../fichiersGraphes/dixSommets.txt')
     reader.readFile()
     import timeit
 
