@@ -1,15 +1,18 @@
 import logging
 import sys
 import os
+from graphstructure import graphDataStructure as gs
+from graphstructure import lectureFichier as lf
+from tools.enumGraphe import *
+
 DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
 sys.path.append(DOSSIER_PARENT)
-from graphstructure import graphDataStructure as gs
-from graphstructure import lectureFichier as lf
-
-from tools.enumGraphe import *
 
 log = logging.getLogger(__name__)
+reader = lf.Reader('../../fichiersGraphes/dixSommets.txt')
+reader.readFile()
+
 
 
 def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
@@ -63,7 +66,7 @@ def get_max_delta(sol):
 def validate_solution(solutions, delta):
     valid_sol = []
     for sol in solutions:
-        if get_max_delta(sol) < delta:
+        if get_max_delta(sol) <= delta:
             valid_sol.append(sol)
     return valid_sol
 
@@ -96,18 +99,21 @@ if __name__ == '__main__':
 
     #### ENUM WITH get_sol FUNCTION ####
     #print(get_best_sol_enumeration(graph,graph.get_weight_inter,2 ,0))
+    #sol = random.choice(getSoluces(reader.g.get_nbVertices(), 3))
+    #print(sol, get_max_delta(sol))
 
-    reader = lf.Reader('../fichiersGraphes/dixSommets.txt')
-    reader.readFile()
+
+
     import timeit
-
+    nbK = 3
+    delta_max = 3
     start = timeit.default_timer()
-
-    print(get_best_sol_enumeration(reader.g, reader.g.get_weight_inter, 2, 2))
-
+    sol = get_best_sol_enumeration(reader.g, reader.g.get_weight_inter, nbK, delta_max)
     stop = timeit.default_timer()
+    log.info(sol)
+    log.info("\n nbS = %d; nbK = %d; delta_max = %d" % (graph.get_nbVertices(), nbK, delta_max))
+    log.info('time : %f' % (stop - start))
 
-    print(stop - start)
 
 
 
