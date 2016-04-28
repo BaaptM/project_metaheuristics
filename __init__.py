@@ -1,1 +1,2 @@
-## projet megit ta
+## projet de M1 Metaheuristique
+##
