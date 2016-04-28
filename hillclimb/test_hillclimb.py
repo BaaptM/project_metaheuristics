@@ -4,7 +4,7 @@ from tools.voisinageGraphe import *
 from enumerate.enumerate import *
 
 log = logging.getLogger(__name__)
-reader = Reader('../../fichiersGraphes/dixSommets.txt')
+reader = Reader('../fichiersGraphes/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
@@ -64,7 +64,11 @@ def test_peak_hillclimb():
 
 def test_file_hillcimb():
     def init_function():
-        return random.choice(validate_solution(getSoluces(graph.get_nbVertices(), nbK), delta_max))
+        while True:
+            sol = get_random_soluce(graph.get_nbVertices(), nbK)
+            if get_max_delta(sol) <= delta_max:
+                break
+        return sol
         #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
 
     num_evaluations, best_score, best = hc.hillclimb(init_function, pick_gen, graph.get_weight_inter,
@@ -92,7 +96,7 @@ if __name__ == '__main__':
     all_num_evaluations = []
     all_best_score = []
     all_time = []
-    for i in range(100):
+    for i in range(25):
         start = timeit.default_timer()
         num_evaluations, best_score, best = test_file_hillcimb()
         stop = timeit.default_timer()

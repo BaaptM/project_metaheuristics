@@ -1,21 +1,31 @@
+from enumerate.enumerate import get_max_delta
+from hillclimb.hillclimb import hillclimb
 from simulatedannealing.sa import *
 from graphstructure.lectureFichier import *
 from tools.enumGraphe import *
 from tools.voisinageGraphe import *
 log = logging.getLogger(__name__)
 
-reader = Reader('../../fichiersGraphes/dixSommets.txt')
+reader = Reader('../fichiersGraphes/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
 nbK = 3
 delta_max = 3
 start_temp = 100
-alpha = .75
+alpha = .95
 
 def test_file_sa():
     def init_function():
-        return random.choice(validate_solution(getSoluces(graph.get_nbVertices(), nbK), delta_max))
+        num_evaluations, best_score, best = hillclimb(init_function2, pick_gen, graph.get_weight_inter,
+                                                     max_evaluations, delta_max)
+        return best
+    def init_function2():
+        while True:
+            sol = get_random_soluce(graph.get_nbVertices(), nbK)
+            if get_max_delta(sol) <= delta_max:
+                break
+        return sol
         #return [[0,1,2,3,4,5,6,7,8,9],[10,11,12,13,14,15,16,17,18,19]]
 
     num_evaluations, best_score, best, temp = anneal(init_function, pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
@@ -34,7 +44,7 @@ if __name__ == '__main__':
     all_time = []
     all_temp = []
     global temps
-    for i in range(100):
+    for i in range(1):
         start = timeit.default_timer()
         num_evaluations, best_score, best, temperature = test_file_sa()
         stop = timeit.default_timer()
