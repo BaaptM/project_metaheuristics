@@ -7,8 +7,7 @@
 # On s'occupe de l'enumeration
 # explicite : ne pas rater de classes
 # implicite : ne pas explorer de classes sans avenir
-
-
+import random
 
 __author__ = "mmc <marc.corsini@u-bordeaux2.fr>"
 
@@ -49,6 +48,21 @@ def getSoluces(nbS,nbK):
 
     _generator = enum_gen(nbS,nbK)
     return [ __fromGen2Partition(_,nbS,nbK) for _ in _generator ]
+
+
+def get_random_soluce(nbS,nbK):
+
+    # get a random soluce
+    # @param nbS: le nombre de sommet
+    # @param nbK: le nombre de classes
+    # @return one random soluce
+
+    sol = []
+    for k in range(nbK):
+        sol.append([])
+    for i in range(nbS):
+        sol[random.randint(0, nbK-1)].append(i)
+    return sol
 
 def rec(nbK,nbS):
 
@@ -154,3 +168,4 @@ if __name__ == '__main__' :
                 print("%d %d" % (nSommets,nClasses)),
             finally:
                 print("size : %d < %d " % (len(_ll),nClasses ** nSommets))
+    print(get_random_soluce(20,3))
