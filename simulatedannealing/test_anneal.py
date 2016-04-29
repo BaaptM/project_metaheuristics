@@ -1,12 +1,20 @@
+import os
+import sys
+import logging
+
+DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
+DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
+sys.path.append(DOSSIER_PARENT)
+
 from enumerate.enumerate import get_max_delta
 from hillclimb.hillclimb import hillclimb
 from simulatedannealing.sa import *
 from graphstructure.lectureFichier import *
 from tools.enumGraphe import *
 from tools.voisinageGraphe import *
-log = logging.getLogger(__name__)
 
-reader = Reader('../fichiersGraphes/cinquanteSommets.txt')
+log = logging.getLogger(__name__)
+reader = Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
@@ -17,10 +25,10 @@ alpha = .95
 
 def test_file_sa():
     def init_function():
-        num_evaluations, best_score, best = hillclimb(init_function2, pick_gen, graph.get_weight_inter,
+        num_evaluations, best_score, best = hillclimb(init_function_hillclimbing, pick_gen, graph.get_weight_inter,
                                                      max_evaluations, delta_max)
         return best
-    def init_function2():
+    def init_function_hillclimbing():
         while True:
             sol = get_random_soluce(graph.get_nbVertices(), nbK)
             if get_max_delta(sol) <= delta_max:
@@ -44,7 +52,7 @@ if __name__ == '__main__':
     all_time = []
     all_temp = []
     global temps
-    for i in range(1):
+    for i in range(100):
         start = timeit.default_timer()
         num_evaluations, best_score, best, temperature = test_file_sa()
         stop = timeit.default_timer()

@@ -2,15 +2,15 @@ import logging
 import sys
 import os
 
-import enumerate as enum
-from graphstructure import graphDataStructure as gs
-from graphstructure import lectureFichier as lf
-from tools.enumGraphe import *
-
 DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
 sys.path.append(DOSSIER_PARENT)
 log = logging.getLogger(__name__)
+
+import enumerate as enum
+from graphstructure import graphDataStructure as gs
+from graphstructure import lectureFichier as lf
+from tools.enumGraphe import *
 
 reader = lf.Reader('../fichiersGraphes/dixSommets.txt')
 reader.readFile()
