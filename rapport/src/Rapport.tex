@@ -76,7 +76,6 @@ Marc Michel \textsc{Corsini}
 
 \newpage
 \section{Introduction}
-
 Dans le cadre du cours de recherche opérationnel de master 1 informatique a l'université de Bordeaux, ce projet a pour but de mettre en pratique des algorithmes et méta-algorithme, tel que la descente de gradient, le Recuit simulé ou encore la méthode Tabou. Pour cela nous disposons de graphes pondérés de différentes taille (de 5-7 sommets a plus de milles), sur lesquelles nous allons tester et comparé les résultats de nos différents algorithme appliqué au problème de partitionnement de graphe en classes à peu près équitables.
 
 \subsection{Le problème}
@@ -91,7 +90,9 @@ Nous avons choisi de ne pas implémenter la notion  d'équilibre entre les class
 
 
 \section{Méthode d’énumération}
+La solution la plus simple consiste à énumérer toutes les solutions valides et de calculer la somme du poids des arrêtes interclasses, les solutions avec la somme des poids plus faible sont retournées en résultats de l'algorithme d'énumération. Les solutions retournées sont donc toujours les solutions optimales, cependant la puissance de nos calculateurs fait défaut et en dépassant un nombre de sommets ou en demandant un partitionnement avec plusieurs classes, nos ordinateurs ne dispose pas d'un puissance de calcul suffisante et l'énumération des solutions devient impossible.
 
+\subsection{Test et limite}
 
 \section{Descente de Gradient}
 
