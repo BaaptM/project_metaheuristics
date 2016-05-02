@@ -1,4 +1,4 @@
-\documentclass[a4paper]{report}
+\documentclass[a4paper]{article}
 \usepackage[french]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
@@ -77,7 +77,21 @@ Marc Michel \textsc{Corsini}
 \newpage
 \section{Introduction}
 
+Dans le cadre du cours de recherche opérationnel de master 1 informatique a l'université de Bordeaux, ce projet a pour but de mettre en pratique des algorithmes et méta-algorithme, tel que la descente de gradient, le Recuit simulé ou encore la méthode Tabou. Pour cela nous disposons de graphes pondérés de différentes taille (de 5-7 sommets a plus de milles), sur lesquelles nous allons tester et comparé les résultats de nos différents algorithme appliqué au problème de partitionnement de graphe en classes à peu près équitables.
+
+\subsection{Le problème}
+Notre problème: partitionner un graphe en K classes en minimisant le poids interclasses. Cela consistes à placer chaque sommet du graphe dans une des classe de manières à réduire le somme du poids des arrêtes n'appartenant pas à la même classe.
+
+\subsection{Nombre de classes}
+Nous avons choisi de laisser le nombre de classes libre, l'utilisateur lance donc les algorithmes en donnant comme entrée un graphe pondéré et un nombre de classe. 
+
+\subsection{Définition de l'équitable}
+
+Nous avons choisi de ne pas implémenter la notion  d'équilibre entre les classes dans nos méta-algorithmes, l'utilisateur dispose d'un variable supplémentaire appelé delta\_max; elle correspond à l'écart maximum entre les classes pour qu'une solution soit considérée comme valide et puisse être retournée en sortie des différents algorithmes utilisés dans ce projet.
+
+
 \section{Méthode d’énumération}
+
 
 \section{Descente de Gradient}
 
