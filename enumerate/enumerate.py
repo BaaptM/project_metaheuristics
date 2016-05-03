@@ -11,7 +11,7 @@ sys.path.append(DOSSIER_PARENT)
 
 log = logging.getLogger(__name__)
 
-def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
+def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
     # function to partition with the less interclasses weight by enumeration
     # @param graph the graph to be partitioned
     # @param nbK number of classes
@@ -26,14 +26,14 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max):
     # current_sol = first of potential_sols
     if(len(potential_sols) > 0):
         current_sol.append(potential_sols[0])
-        current_weight = objective_function(current_sol[0])
+        current_weight = objective_function(current_sol[0], mu)
 
     # evaluate all sol
     if(len(current_sol) == 0):
         log.info('no possible solutions with this delta')
     else:
         for sol in potential_sols:  # enum all valid sol
-            actual_weight = objective_function(sol)
+            actual_weight = objective_function(sol, mu)
             if actual_weight < current_weight:
                 del current_sol[:]
                 current_sol.append(sol)

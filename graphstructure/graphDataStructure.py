@@ -1,6 +1,8 @@
 #!/usr/local/bin/pyhon3
 import sys
 
+import enumerate as enum
+
 class Vertex:
     def __init__(self, node):
         self.id = node
@@ -92,14 +94,11 @@ class Graph:
             classes.append(build_classe)
         return classes
 
-    def get_weight_inter(self, solutions):
+    def get_weight_inter(self, solution):
         # function to sum the weight of interclass edges
         # @return the weight
 
-        # todo check if all vertices are in the same graph
-        # todo check if all vertex have a classe
-
-        classes = self.sol_to_classes(solutions)
+        classes = self.sol_to_classes(solution)
         edgeDone = [()]
         sum = 0
         for classe in classes[:-1]:
@@ -111,6 +110,11 @@ class Graph:
                         sum += vertex.get_weight(neighboor)
         return sum
 
+    def get_score(self, solution, mu):
+        # function to get weight with delta influence the weight
+        # @return calculated score
+
+        return self.get_weight_inter(solution) + mu * (enum.get_max_delta(solution) / self.get_nbVertices())
 
 
 
