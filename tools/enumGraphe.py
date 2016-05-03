@@ -63,6 +63,22 @@ def get_random_soluce(nbS,nbK):
     for i in range(nbS):
         sol[random.randint(0, nbK-1)].append(i)
     return sol
+def get_max_delta(sol):
+    max_delta = 0
+    for classe1 in sol:
+        for classe2 in sol:
+            delta = abs(len(classe1) - len(classe2))
+            if max_delta < delta:
+                max_delta = delta
+    return max_delta
+
+
+def validate_solution(solutions, delta):
+    valid_sol = []
+    for sol in solutions:
+        if get_max_delta(sol) <= delta:
+            valid_sol.append(sol)
+    return valid_sol
 
 def rec(nbK,nbS):
 

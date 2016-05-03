@@ -1,7 +1,5 @@
-#!/usr/local/bin/pyhon3
 import sys
-
-import enumerate as enum
+from tools import enumGraphe
 
 class Vertex:
     def __init__(self, node):
@@ -114,7 +112,7 @@ class Graph:
         # function to get weight with delta influence the weight
         # @return calculated score
 
-        return self.get_weight_inter(solution) + mu * (enum.get_max_delta(solution) / self.get_nbVertices())
+        return self.get_weight_inter(solution) + mu * (enumGraphe.get_max_delta(solution) / self.get_nbVertices())
 
 
 

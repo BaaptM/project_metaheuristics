@@ -1,18 +1,15 @@
 import logging
 import sys
 import os
-
-DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
-sys.path.append(DOSSIER_PARENT)
-log = logging.getLogger(__name__)
-
-import enumerate as enum
-from graphstructure import graphDataStructure as gs
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+from enumerate import enum
 from graphstructure import lectureFichier as lf
-from tools.enumGraphe import *
 
-reader = lf.Reader('../fichiersGraphes/dixSommets.txt')
+log = logging.getLogger(__name__)
+#reader = lf.Reader('../fichiersGraphes/dixSommets.txt')
+reader = lf.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 
 

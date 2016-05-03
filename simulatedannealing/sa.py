@@ -1,7 +1,7 @@
 import random
 import math
 import logging
-from enumerate.enumerate import validate_solution
+from tools import enumGraphe
 
 log = logging.getLogger(__name__)
 
@@ -55,7 +55,7 @@ def anneal(init_function, move_operator, objective_function, max_evaluations, st
     for temperature in cooling_schedule:
         done = False
         # examine moves around current position
-        for next in validate_solution(move_operator(current), delta_max):
+        for next in enumGraphe.validate_solution(move_operator(current), delta_max):
             if num_evaluations >= max_evaluations:
                 done = True
                 break

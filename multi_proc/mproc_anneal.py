@@ -6,15 +6,15 @@ DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
 sys.path.append(DOSSIER_PARENT)
 
-from graphstructure.lectureFichier import *
-from hillclimb.hillclimb import hillclimb
-from simulatedannealing.sa import *
-from enumerate.enumerate import *
+from graphstructure import lectureFichier
+from hillclimb import hc
 from multiprocessing import Pool,cpu_count
-from tools.voisinageGraphe import pick_gen
+from tools import voisinageGraphe, enumGraphe
+from simulatedannealing import sa
 
 log = logging.getLogger(__name__)
-reader = Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+
+reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 
@@ -30,13 +30,13 @@ nb_iterations = 100
 
 
 def init_function():
-    num_evaluations, best_score, best = hillclimb(init_function_hillclimbing, pick_gen, graph.get_weight_inter, max_evaluations, delta_max)
+    num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, delta_max)
     return best
 
 def init_function_hillclimbing():
     while True:
-        sol = get_random_soluce(graph.get_nbVertices(), nbK)
-        if get_max_delta(sol) <= delta_max:
+        sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
+        if enumGraphe.get_max_delta(sol) <= delta_max:
             break
     return sol
     # return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
@@ -46,7 +46,7 @@ def doWork(num_iteration):
     #todo level the logging info
     log.info('Start process number : %d' % num_iteration)
     start = timeit.default_timer()
-    num_evaluations, best_score, best, temp = anneal(init_function, pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
+    num_evaluations, best_score, best, temp = sa.anneal(init_function, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
     stop = timeit.default_timer()
     log.info('time : %f' % (stop - start))
     return num_evaluations, best_score, best, temp, (stop - start)

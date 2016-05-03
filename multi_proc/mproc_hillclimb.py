@@ -2,18 +2,18 @@ import os
 import sys
 import logging
 
-DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
-sys.path.append(DOSSIER_PARENT)
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
-from graphstructure.lectureFichier import *
-from hillclimb.hillclimb import hillclimb
-from enumerate.enumerate import *
-from multiprocessing import Pool,cpu_count
+from graphstructure import lectureFichier
+from hillclimb.hc import hillclimb
+from enumerate import enum
+from multiprocessing import Pool, cpu_count
 from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
-reader = Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 
@@ -26,8 +26,8 @@ nb_iterations = 100
 
 def init_function():
     while True:
-        sol = get_random_soluce(graph.get_nbVertices(), nbK)
-        if get_max_delta(sol) <= delta_max:
+        sol = enum.get_random_soluce(graph.get_nbVertices(), nbK)
+        if enum.get_max_delta(sol) <= delta_max:
             break
     return sol
     # return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]

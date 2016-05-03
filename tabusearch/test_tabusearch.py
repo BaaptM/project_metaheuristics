@@ -1,10 +1,19 @@
-import tabusearch as ts
-from graphstructure.lectureFichier import *
-from tools.voisinageGraphe import *
-from enumerate.enumerate import *
+import logging
+import sys
+import os
+
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
+from tabusearch import ts
+from graphstructure import lectureFichier
+from tools import voisinageGraphe, enumGraphe
 
 log = logging.getLogger(__name__)
-reader = Reader('../../fichiersGraphes/cinquanteSommets.txt')
+
+#reader = lectureFichier.Reader('../fichiersGraphes/cinquanteSommets.txt')
+reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
@@ -14,13 +23,13 @@ nbK = 3
 def test_file_tabusearch():
     def init_function():
         while True:
-            sol = get_random_soluce(graph.get_nbVertices(), nbK)
-            if get_max_delta(sol) <= delta_max:
+            sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
+            if enumGraphe.get_max_delta(sol) <= delta_max:
                 break
         return sol
         #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
 
-    num_evaluations, best_score, best = ts.tabusearch(init_function, pick_gen, graph.get_weight_inter,
+    num_evaluations, best_score, best = ts.tabusearch(init_function, voisinageGraphe.pick_gen, graph.get_weight_inter,
                                                      max_evaluations, delta_max)
     log.info(best)
     return num_evaluations, best_score, best

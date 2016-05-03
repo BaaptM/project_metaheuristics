@@ -1,6 +1,5 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-from enumerate.enumerate import *
+import logging
+from enumerate import enum
 
 log = logging.getLogger(__name__)
 
@@ -16,7 +15,7 @@ def hillclimb(init_function,move_operator,objective_function,max_evaluations, de
     while num_evaluations < max_evaluations:
         # examine moves around current position
         move_made=False
-        for next in validate_solution(move_operator(best), delta_max):
+        for next in enum.validate_solution(move_operator(best), delta_max):
             if num_evaluations >= max_evaluations:
                 break
             

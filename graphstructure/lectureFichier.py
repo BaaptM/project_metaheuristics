@@ -1,4 +1,5 @@
-from graphstructure.graphDataStructure import *
+import sys
+from graphstructure import graphDataStructure
 
 
 def usage(prog):
@@ -15,7 +16,7 @@ class Reader():
         self.nbEdges = 0
         self.dmin = 0
         self.dmax = 0
-        self.g = Graph()
+        self.g = graphDataStructure.Graph()
         self.degreeFileList = []
 
     def readFile(self):

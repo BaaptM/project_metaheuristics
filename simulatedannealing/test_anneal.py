@@ -6,15 +6,13 @@ DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
 sys.path.append(DOSSIER_PARENT)
 
-from enumerate.enumerate import get_max_delta
-from hillclimb.hillclimb import hillclimb
-from simulatedannealing.sa import *
-from graphstructure.lectureFichier import *
-from tools.enumGraphe import *
-from tools.voisinageGraphe import *
+from tools import enumGraphe, voisinageGraphe
+from hillclimb import hc
+from simulatedannealing import sa
+from graphstructure import lectureFichier
 
 log = logging.getLogger(__name__)
-reader = Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
@@ -25,18 +23,18 @@ alpha = .95
 
 def test_file_sa():
     def init_function():
-        num_evaluations, best_score, best = hillclimb(init_function_hillclimbing, pick_gen, graph.get_weight_inter,
+        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_weight_inter,
                                                      max_evaluations, delta_max)
         return best
     def init_function_hillclimbing():
         while True:
-            sol = get_random_soluce(graph.get_nbVertices(), nbK)
-            if get_max_delta(sol) <= delta_max:
+            sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
+            if enumGraphe.get_max_delta(sol) <= delta_max:
                 break
         return sol
         #return [[0,1,2,3,4,5,6,7,8,9],[10,11,12,13,14,15,16,17,18,19]]
 
-    num_evaluations, best_score, best, temp = anneal(init_function, pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
+    num_evaluations, best_score, best, temp = sa.anneal(init_function, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
     log.info(best)
     return num_evaluations, best_score, best, temp
 

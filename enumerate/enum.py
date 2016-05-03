@@ -1,13 +1,5 @@
 import logging
-import sys
-import os
-from graphstructure import graphDataStructure as gs
-from graphstructure import lectureFichier as lf
-from tools.enumGraphe import *
-
-DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
-sys.path.append(DOSSIER_PARENT)
+from tools import enumGraphe
 
 log = logging.getLogger(__name__)
 
@@ -19,7 +11,7 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
     # @return the best solution
 
     # get all solutions
-    potential_sols = validate_solution(getSoluces(graph.get_nbVertices(), nbK), delta_max)
+    potential_sols = enumGraphe.validate_solution(enumGraphe.getSoluces(graph.get_nbVertices(), nbK), delta_max)
 
     # init current_sol at the first
     current_sol = []
@@ -47,24 +39,6 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
                     current_sol.append(sol)
         print('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
     return current_sol
-
-
-def get_max_delta(sol):
-    max_delta = 0
-    for classe1 in sol:
-        for classe2 in sol:
-            delta = abs(len(classe1) - len(classe2))
-            if max_delta < delta:
-                max_delta = delta
-    return max_delta
-
-
-def validate_solution(solutions, delta):
-    valid_sol = []
-    for sol in solutions:
-        if get_max_delta(sol) <= delta:
-            valid_sol.append(sol)
-    return valid_sol
 
 
 

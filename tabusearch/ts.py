@@ -1,4 +1,5 @@
-from enumerate.enumerate import *
+import logging
+from tools.enumGraphe import validate_solution
 
 log = logging.getLogger(__name__)
 
