@@ -7,7 +7,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 from graphstructure import lectureFichier
 from hillclimb.hc import hillclimb, hillclimb_and_restart
-from tools.enumGraphe import get_random_soluce, getSoluces, get_max_delta, validate_solutiongit
+from tools.enumGraphe import get_random_soluce, getSoluces, get_max_delta, validate_solution
 from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
