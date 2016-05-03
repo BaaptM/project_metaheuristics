@@ -58,13 +58,13 @@ def get_random_soluce(nbS,nbK,delta_max = sys.maxsize):
     # @param nbK: le nombre de classes
     # @return one random soluce
 
-    sol = []
     while True:
+        sol = []
         for k in range(nbK):
             sol.append([])
         for i in range(nbS):
             sol[random.randint(0, nbK-1)].append(i)
-        if get_max_delta(sol) <= delta_max:
+        if get_max_delta(sol) < delta_max:
             break
     return sol
 
