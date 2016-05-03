@@ -8,7 +8,7 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from graphstructure import lectureFichier
 from hillclimb.hc import hillclimb
-from enumerate import enum
+from tools import enumGraphe
 from multiprocessing import Pool, cpu_count
 from tools.voisinageGraphe import pick_gen
 
@@ -26,8 +26,8 @@ nb_iterations = 100
 
 def init_function():
     while True:
-        sol = enum.get_random_soluce(graph.get_nbVertices(), nbK)
-        if enum.get_max_delta(sol) <= delta_max:
+        sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
+        if enumGraphe.get_max_delta(sol) <= delta_max:
             break
     return sol
     # return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
