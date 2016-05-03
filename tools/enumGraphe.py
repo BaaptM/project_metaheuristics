@@ -8,6 +8,7 @@
 # explicite : ne pas rater de classes
 # implicite : ne pas explorer de classes sans avenir
 import random
+import sys
 
 __author__ = "mmc <marc.corsini@u-bordeaux2.fr>"
 
@@ -50,7 +51,7 @@ def getSoluces(nbS,nbK):
     return [ __fromGen2Partition(_,nbS,nbK) for _ in _generator ]
 
 
-def get_random_soluce(nbS,nbK):
+def get_random_soluce(nbS,nbK,delta_max = sys.maxsize):
 
     # get a random soluce
     # @param nbS: le nombre de sommet
@@ -58,11 +59,15 @@ def get_random_soluce(nbS,nbK):
     # @return one random soluce
 
     sol = []
-    for k in range(nbK):
-        sol.append([])
-    for i in range(nbS):
-        sol[random.randint(0, nbK-1)].append(i)
+    while True:
+        for k in range(nbK):
+            sol.append([])
+        for i in range(nbS):
+            sol[random.randint(0, nbK-1)].append(i)
+        if get_max_delta(sol) <= delta_max:
+            break
     return sol
+
 def get_max_delta(sol):
     max_delta = 0
     for classe1 in sol:

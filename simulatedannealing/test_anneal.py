@@ -10,9 +10,14 @@ from tools import enumGraphe, voisinageGraphe
 from hillclimb import hc
 from simulatedannealing import sa
 from graphstructure import lectureFichier
+from tools.enumGraphe import get_random_soluce
+
+
 
 log = logging.getLogger(__name__)
-reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+#reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanSommets.txt')
+reader = lectureFichier.Reader('../fichiersGraphes/dixSommets.txt')
+
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
@@ -23,16 +28,13 @@ alpha = .95
 
 def test_file_sa():
     def init_function():
-        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_weight_inter,
-                                                     max_evaluations, delta_max)
-        return best
+        #num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, delta_max)
+        #return best
+        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
+
     def init_function_hillclimbing():
-        while True:
-            sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
-            if enumGraphe.get_max_delta(sol) <= delta_max:
-                break
-        return sol
-        #return [[0,1,2,3,4,5,6,7,8,9],[10,11,12,13,14,15,16,17,18,19]]
+        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
+
 
     num_evaluations, best_score, best, temp = sa.anneal(init_function, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
     log.info(best)
@@ -50,7 +52,7 @@ if __name__ == '__main__':
     all_time = []
     all_temp = []
     global temps
-    for i in range(100):
+    for i in range(25):
         start = timeit.default_timer()
         num_evaluations, best_score, best, temperature = test_file_sa()
         stop = timeit.default_timer()

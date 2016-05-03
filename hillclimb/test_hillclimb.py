@@ -1,19 +1,19 @@
 import logging
-import random
 import sys
 import os
+
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
+
 from graphstructure import lectureFichier
 from hillclimb.hc import hillclimb, hillclimb_and_restart
-from tools.enumGraphe import get_random_soluce, getSoluces
+from tools.enumGraphe import get_random_soluce
 from tools.voisinageGraphe import pick_gen
-from enumerate import enum
 
 log = logging.getLogger(__name__)
-#reader = lectureFichier.Reader('../fichiersGraphes/cinquanteSommets.txt')
-reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+reader = lectureFichier.Reader('../fichiersGraphes/dixSommets.txt')
+#reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 max_evaluations = 100
@@ -73,12 +73,7 @@ def test_peak_hillclimb():
 
 def test_file_hillcimb():
     def init_function():
-        while True:
-            sol = get_random_soluce(graph.get_nbVertices(), nbK)
-            if enum.get_max_delta(sol) <= delta_max:
-                break
-        return sol
-        #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
+        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
 
     num_evaluations, best_score, best = hillclimb(init_function, pick_gen, graph.get_weight_inter,
                                            max_evaluations, delta_max)
@@ -88,7 +83,7 @@ def test_file_hillcimb():
 
 def test_file_hillcimb_restart():
     def init_function():
-        return random.choice(enum.validate_solution(getSoluces(graph.get_nbVertices(), nbK), delta_max))
+        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
 
     num_evaluations, best_score, best = hillclimb_and_restart(init_function, pick_gen, graph.get_weight_inter,
                                                      max_evaluations, delta_max)

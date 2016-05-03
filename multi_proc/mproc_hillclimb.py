@@ -13,7 +13,8 @@ from multiprocessing import Pool, cpu_count
 from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
-reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+reader = lectureFichier.Reader('../fichiersGraphes/dixSommets.txt')
+#reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 
@@ -26,7 +27,7 @@ nb_iterations = 100
 
 def init_function():
     while True:
-        sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
+        sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
         if enumGraphe.get_max_delta(sol) <= delta_max:
             break
     return sol
