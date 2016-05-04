@@ -14,7 +14,7 @@ from simulatedannealing import sa
 
 log = logging.getLogger(__name__)
 
-reader = lectureFichier.Reader('../fichiersGraphes/dixSommets.txt')
+reader = lectureFichier.Reader('../../fichiersGraphes/dixSommets.txt')
 #reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
@@ -27,11 +27,12 @@ alpha = .95
 
 nbK = 10
 nb_proc = cpu_count()
-nb_iterations = 100
+iter = 100
+mu = .5
 
 
 def init_function():
-    num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, delta_max)
+    num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_score, max_evaluations, delta_max, mu)
     return best
 
 def init_function_hillclimbing():
@@ -44,12 +45,11 @@ def init_function_hillclimbing():
 
 
 def doWork(num_iteration):
-    #todo level the logging info
-    log.info('Start process number : %d' % num_iteration)
+    log.debug('Start process number : %d' % num_iteration)
     start = timeit.default_timer()
-    num_evaluations, best_score, best, temp = sa.anneal(init_function, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, start_temp, alpha, delta_max)
+    num_evaluations, best_score, best, temp = sa.anneal(init_function, voisinageGraphe.pick_gen, graph.get_score, max_evaluations, start_temp, alpha, delta_max, mu)
     stop = timeit.default_timer()
-    log.info('time : %f' % (stop - start))
+    log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, temp, (stop - start)
 
 
@@ -60,6 +60,11 @@ if __name__ == '__main__':
     import statistics
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    fh = logging.FileHandler('mproc_sim-anneal.log')
+    fh.setLevel(logging.INFO)
+    frmt = logging.Formatter('%(message)s')
+    fh.setFormatter(frmt)
+    log.addHandler(fh)
 
     all_num_evaluations = []
     all_best_score = []
@@ -67,11 +72,13 @@ if __name__ == '__main__':
     all_temp = []
 
     pool = Pool(processes=nb_proc)
-    results = pool.map(doWork, range(nb_iterations))
+    log.info("-------MULTI_PROC SIMULATED ANNEALING-------")
+    startWork = timeit.default_timer()
+    results = pool.map(doWork, range(iter))
+    stopWork = timeit.default_timer()
+    timeWork = (stopWork - startWork)
 
     actual_best_score = sys.maxsize
-    best = None
-
     for result in results:
         num_evaluations, best_score, best, temp, time = result
         if best_score < actual_best_score:
@@ -82,15 +89,20 @@ if __name__ == '__main__':
         all_best_score.append(best_score)
         all_time.append(time)
 
-    log.info("\n nbS = %d; nbK = %d; delta_max = %d" % (graph.get_nbVertices(), nbK, delta_max))
-    log.info("\n for %d iteration, best score found is %d,"
-             "\n mean time : %f,"
-             "\n mean best_score : %f, EcT : %f"
-             "\n mean num_eval : %f,"
-             "\n mean end temperature : %f" % (nb_iterations, min(score for score in all_best_score),
+    log.info("Running on %d proc" % nb_proc)
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; start_temp = %r; alpha = %r" % (graph.get_nbVertices(), nbK, delta_max, mu, start_temp, alpha))
+    log.info("for %d iteration with %d max_evaluations each, "
+             "\n best score found is %d,"
+             "\n total time in sec : %r"
+             "\n mean time in sec : %r,"
+             "\n mean best_score : %r, EcT : %r"
+             "\n mean num_eval : %r,"
+             "\n mean end temperature : %r" % (iter,
+                                               max_evaluations,
+                                               min(score for score in all_best_score),
+                                               timeWork,
                                                statistics.mean(all_time),
                                                statistics.mean(all_best_score),
                                                statistics.stdev(all_best_score),
                                                statistics.mean(all_num_evaluations),
                                                statistics.mean(all_temp)))
-    log.info("\n Best sol is %s score : %d" %(actual_best, actual_best_score))

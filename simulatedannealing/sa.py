@@ -14,12 +14,12 @@ class ObjectiveFunction:
         self.best = None
         self.best_score = None
 
-    def __call__(self, solution):
-        score = self.objective_function(solution)
+    def __call__(self, solution, mu):
+        score = self.objective_function(solution, mu)
         if self.best is None or score < self.best_score:
             self.best_score = score
             self.best = solution
-            log.info('new best score: %f' % self.best_score)
+            log.debug('new best score: %f' % self.best_score)
         return score
 
 
@@ -41,16 +41,16 @@ def kirkpatrick_cooling(start_temp, alpha):
         T = alpha * T
 
 
-def anneal(init_function, move_operator, objective_function, max_evaluations, start_temp, alpha, delta_max):
+def anneal(init_function, move_operator, objective_function, max_evaluations, start_temp, alpha, delta_max, mu):
     objective_function = ObjectiveFunction(objective_function)
 
     current = init_function()
-    current_score = objective_function(current)
+    current_score = objective_function(current, mu)
     num_evaluations = 1
 
     cooling_schedule = kirkpatrick_cooling(start_temp, alpha)
 
-    log.info('anneal started: score=%f' % current_score)
+    log.debug('anneal started: score=%f' % current_score)
 
     for temperature in cooling_schedule:
         done = False
@@ -60,7 +60,7 @@ def anneal(init_function, move_operator, objective_function, max_evaluations, st
                 done = True
                 break
 
-            next_score = objective_function(next)
+            next_score = objective_function(next, mu)
             num_evaluations += 1
 
             # probablistically accept this solution
@@ -74,6 +74,6 @@ def anneal(init_function, move_operator, objective_function, max_evaluations, st
 
     best_score = objective_function.best_score
     best = objective_function.best
-    log.info('final temperature: %f' % temperature)
-    log.info('anneal finished: num_evaluations=%d, best_score=%d' % (num_evaluations, best_score))
+    log.debug('final temperature: %f' % temperature)
+    log.debug('anneal finished: num_evaluations=%d, best_score=%d' % (num_evaluations, best_score))
     return num_evaluations, best_score, best, temperature

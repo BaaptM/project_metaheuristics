@@ -22,7 +22,7 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
 
     # evaluate all sol
     if(len(current_sol) == 0):
-        log.info('no possible solutions with this delta')
+        log.debug('no possible solutions with this delta')
     else:
         for sol in potential_sols:  # enum all valid sol
             actual_weight = objective_function(sol, mu)
@@ -37,8 +37,8 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
                         contain = classe in csol
                 if not contain:
                     current_sol.append(sol)
-        print('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
-    return current_sol
+        log.debug('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
+    return (current_weight, current_sol)
 
 
 

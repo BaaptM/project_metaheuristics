@@ -13,17 +13,17 @@ from multiprocessing import Pool, cpu_count
 from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
-reader = lectureFichier.Reader('../fichiersGraphes/dixSommets.txt')
+reader = lectureFichier.Reader('../../fichiersGraphes/dixSommets.txt')
 #reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
 reader.readFile()
 graph = reader.g
 
 max_evaluations = 100
 delta_max = 3
-nbK = 10
+nbK = 3
 nb_proc = cpu_count()
-nb_iterations = 100
-
+iter = 100
+mu = .5
 
 def init_function():
     while True:
@@ -35,12 +35,12 @@ def init_function():
 
 
 def doWork(num_iteration):
-    log.info('Start process number : %d' %num_iteration)
+    log.debug('Start process number : %d' %num_iteration)
     start = timeit.default_timer()
-    num_evaluations, best_score, best = hillclimb(init_function, pick_gen, graph.get_weight_inter,
-                                                  max_evaluations, delta_max)
+    num_evaluations, best_score, best = hillclimb(init_function, pick_gen, graph.get_score,
+                                                  max_evaluations, delta_max, mu)
     stop = timeit.default_timer()
-    log.info('time : %f' % (stop - start))
+    log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, (stop - start)
 
 
@@ -51,17 +51,25 @@ if __name__ == '__main__':
     import statistics
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    fh = logging.FileHandler('mproc_hillclimbing.log')
+    fh.setLevel(logging.INFO)
+    frmt = logging.Formatter('%(message)s')
+    fh.setFormatter(frmt)
+    log.addHandler(fh)
 
     all_num_evaluations = []
     all_best_score = []
     all_time = []
 
     pool = Pool(processes=nb_proc)
-    results = pool.map(doWork, range(nb_iterations))
+    startWork = timeit.default_timer()
+    results = pool.map(doWork, range(iter))
+    stopWork = timeit.default_timer()
+    timeWork = (stopWork - startWork)
 
     actual_best_score = sys.maxsize
-    best = None
 
+    log.info("-------MULTI_PROC HILLCLIMB-------")
     for result in results:
         num_evaluations, best_score, best, time = result
         if best_score < actual_best_score:
@@ -70,15 +78,18 @@ if __name__ == '__main__':
         all_num_evaluations.append(num_evaluations)
         all_best_score.append(best_score)
         all_time.append(time)
-
-    log.info("\n nbS = %d; nbK = %d; delta_max = %d"%(graph.get_nbVertices(),nbK,delta_max))
-    log.info("\n for 100 iteration, "
+    log.info("Running on %d proc" % nb_proc)
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r" % (graph.get_nbVertices(), nbK, delta_max, mu))
+    log.info("for %d iteration with %d max_evaluations each, "
+             "\n total time in sec : %r"
              "\n best score found is %d,"
-             "\n mean time : %f,"
-             "\n mean best_score : %f, EcT : %f"
-             "\n mean num_eval : %f"
-             %(min(score for score in all_best_score),
-               statistics.mean(all_time),
-               statistics.mean(all_best_score), statistics.stdev(all_best_score),
-               statistics.mean(all_num_evaluations)))
-    log.info("\n Best sol is %s score : %d" %(actual_best, actual_best_score))
+             "\n mean time in sec : %r,"
+             "\n mean best_score : %r, EcT : %r"
+             "\n mean num_eval : %r"
+             % (iter,
+                max_evaluations,
+                timeWork,
+                min(score for score in all_best_score),
+                statistics.mean(all_time),
+                statistics.mean(all_best_score), statistics.stdev(all_best_score),
+                statistics.mean(all_num_evaluations)))
