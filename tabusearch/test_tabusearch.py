@@ -8,7 +8,8 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from tabusearch import ts
 from graphstructure import lectureFichier
-from tools import voisinageGraphe, enumGraphe
+from tools import voisinageGraphe
+from tools.enumGraphe import get_random_soluce
 
 log = logging.getLogger(__name__)
 
@@ -24,12 +25,7 @@ iter = 100
 
 def test_file_tabusearch():
     def init_function():
-        while True:
-            sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK)
-            if enumGraphe.get_max_delta(sol) <= delta_max:
-                break
-        return sol
-        #return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
+        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
 
     num_evaluations, best_score, best = ts.tabusearch(init_function, voisinageGraphe.pick_gen, graph.get_score,
                                                      max_evaluations, delta_max, mu)
