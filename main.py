@@ -18,7 +18,8 @@ Options:
     --max_eval=N        Set the max number of evaluating a solution
     --iter=N            Set the number of repeated execution (for loop)
     -r                  Restart hillclimb until max_eval is reached
-    --move=op           Set the move operator for elementary move to another solution
+    --move=op           Set the move operator for elementary move to another solution ( pNd ; swap ; sweep )
+    -mproc              Running multi proc version of algorithms
     -h --help           Show this screen.
     --version           Show version.
 """
@@ -41,8 +42,7 @@ if __name__ == '__main__':
     nbk = int(arguments['--nbk'])
     delta_max = int(arguments['--delta_max'])
     mu = int(arguments['--mu'])
-    #temp = float(arguments['--temp'])
-    #alpha = float(arguments['--alpha'])
+
 
     if arguments['enum']:
         test_enum(graph, nbk, delta_max, mu)
@@ -50,17 +50,28 @@ if __name__ == '__main__':
         max_eval = int(arguments['--max_eval'])
         iter = int(arguments['--iter'])
         global move_operator
-        if 'pick_gen' in arguments['--move']:
+        if 'pNd' in arguments['--move']:
             move_operator = pick_gen
         elif 'swap' in arguments['--move']:
             move_operator = swap_gen
         elif 'sweep' in arguments['--move']:
             move_operator = sweep_gen
+
         if arguments['hc']:
+            #if arguments['-mproc']:
+            #else:
             if arguments['-r']:
                 mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
             else:
                 main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+    #todo implements the others
+        #if arguments['sa']:
+            # if arguments['-mproc']:
+            # else:
+        #if arguments['ts']:
+            # if arguments['-mproc']:
+            # else:
+
 
 
 
