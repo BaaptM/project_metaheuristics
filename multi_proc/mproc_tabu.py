@@ -7,7 +7,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from graphstructure import lectureFichier
-from hillclimb.hc import hillclimb
+from tabusearch.ts import tabusearch
 from tools.enumGraphe import get_random_soluce
 from multiprocessing import Pool, cpu_count
 from tools.voisinageGraphe import pick_gen
@@ -28,11 +28,10 @@ mu = .5
 def init_function():
     return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
 
-
 def doWork(num_iteration):
     log.debug('Start process number : %d' %num_iteration)
     start = timeit.default_timer()
-    num_evaluations, best_score, best = hillclimb(init_function, pick_gen, graph.get_score,
+    num_evaluations, best_score, best = tabusearch(init_function, pick_gen, graph.get_score,
                                                   max_evaluations, delta_max, mu)
     stop = timeit.default_timer()
     log.debug('time : %f' % (stop - start))
@@ -46,7 +45,7 @@ if __name__ == '__main__':
     import statistics
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('mproc_hillclimbing.log')
+    fh = logging.FileHandler('mproc_tabusearch.log')
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -64,7 +63,7 @@ if __name__ == '__main__':
 
     actual_best_score = sys.maxsize
 
-    log.info("-------MULTI_PROC HILLCLIMB-------")
+    log.info("-------MULTI_PROC TABUSEARCH-------")
     for result in results:
         num_evaluations, best_score, best, time = result
         if best_score < actual_best_score:

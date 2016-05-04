@@ -6,12 +6,11 @@ DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
 sys.path.append(DOSSIER_PARENT)
 
-from tools import enumGraphe, voisinageGraphe
+from tools import voisinageGraphe
 from hillclimb import hc
 from simulatedannealing import sa
 from graphstructure import lectureFichier
 from tools.enumGraphe import get_random_soluce
-
 
 
 log = logging.getLogger(__name__)
@@ -28,15 +27,14 @@ alpha = .95
 mu = .5
 iter = 100
 
+
 def test_file_sa():
     def init_function():
-        #num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_weight_inter, max_evaluations, delta_max)
-        #return best
-        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
+        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimb, voisinageGraphe.pick_gen, graph.get_score, max_evaluations, delta_max, mu)
+        return best
 
-    def init_function_hillclimbing():
+    def init_function_hillclimb():
         return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
-
 
     num_evaluations, best_score, best, temp = sa.anneal(init_function, voisinageGraphe.pick_gen, graph.get_score, max_evaluations, start_temp, alpha, delta_max, mu)
     log.debug(best)
