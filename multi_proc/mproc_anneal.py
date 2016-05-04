@@ -2,6 +2,8 @@ import os
 import sys
 import logging
 
+from tools import voisinageGraphe
+
 DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
 DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
 sys.path.append(DOSSIER_PARENT)
@@ -9,8 +11,9 @@ sys.path.append(DOSSIER_PARENT)
 from graphstructure import lectureFichier
 from hillclimb import hc
 from multiprocessing import Pool,cpu_count
-from tools import voisinageGraphe, enumGraphe
 from simulatedannealing import sa
+from tools.enumGraphe import get_random_soluce
+from tools import voisinageGraphe
 
 log = logging.getLogger(__name__)
 
@@ -35,13 +38,9 @@ def init_function():
     num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, voisinageGraphe.pick_gen, graph.get_score, max_evaluations, delta_max, mu)
     return best
 
+
 def init_function_hillclimbing():
-    while True:
-        sol = enumGraphe.get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
-        if enumGraphe.get_max_delta(sol) <= delta_max:
-            break
-    return sol
-    # return [[0,1,2,3,4,5,6,7],[8,9,10,11,12,13,14,15,16,17,18,19]]
+    return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
 
 
 def doWork(num_iteration):
