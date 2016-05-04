@@ -1,6 +1,8 @@
 import logging
 import sys
 import os
+import timeit
+import statistics
 
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
@@ -61,65 +63,47 @@ def test_peak_hillclimb():
     assert best_score == 100
 
 
-def test_file_hillcimb():
+def test_file_hillcimb(graph, nbk, delta_max, mu, max_eval, move_operator):
     def init_function():
-        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
+        return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
     num_evaluations, best_score, best = hillclimb(init_function, pick_gen, graph.get_score,
-                                                  max_evaluations, delta_max, mu)
+                                                  max_eval, delta_max, mu)
     log.debug(best)
     return num_evaluations, best_score, best
 
 
-def test_file_hillcimb_restart():
+def test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operator):
     def init_function():
-        return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
+        return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
     num_evaluations, best_score, best = hillclimb_and_restart(init_function, pick_gen, graph.get_score,
-                                                              max_evaluations, delta_max)
+                                                              max_eval, delta_max, mu)
     log.debug(best)
+    return num_evaluations, best_score, best
 
-
-if __name__ == '__main__':
-    import logging
-    import sys
-    import timeit
-    import statistics
-
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('hillclimbing.log')
+    fh = logging.FileHandler('logs/hillclimbing.log')
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
     log.addHandler(fh)
 
-    if (len(sys.argv) != 2):
-        lectureFichier.usage(sys.argv[0])
-        exit()
-
-    reader = lectureFichier.Reader(sys.argv[1])
-    # reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
-    reader.readFile()
-    graph = reader.g
-    max_evaluations = 100
-    delta_max = 3
-    nbK = 3
-    mu = .5
-    iter = 100
-
     all_num_evaluations = []
     all_best_score = []
     all_time = []
+
     log.info("-------RUNNING HILLCLIMB-------")
     for i in range(iter):
         start = timeit.default_timer()
-        num_evaluations, best_score, best = test_file_hillcimb()
+        num_evaluations, best_score, best = test_file_hillcimb(graph, nbk, delta_max, mu, max_eval, move_operator)
         stop = timeit.default_timer()
         log.debug('time : %f' % (stop - start))
         all_num_evaluations.append(num_evaluations)
         all_best_score.append(best_score)
         all_time.append(stop - start)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r" % (graph.get_nbVertices(), nbK, delta_max, mu))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r" % (graph.get_nbVertices(), nbk, delta_max, mu))
     log.info("for %d iteration with %d max_evaluations each, "
              "\n total time in sec : %r"
              "\n best score found is %d,"
@@ -127,9 +111,59 @@ if __name__ == '__main__':
              "\n mean best_score : %r, EcT : %r"
              "\n mean num_eval : %r"
              % (iter,
-                max_evaluations,
+                max_eval,
                 sum(all_time),
                 min(score for score in all_best_score),
                 statistics.mean(all_time),
                 statistics.mean(all_best_score), statistics.stdev(all_best_score),
                 statistics.mean(all_num_evaluations)))
+
+def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
+    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
+    fh = logging.FileHandler('logs/hillclimbing.log')
+    fh.setLevel(logging.INFO)
+    frmt = logging.Formatter('%(message)s')
+    fh.setFormatter(frmt)
+    log.addHandler(fh)
+
+    all_num_evaluations = []
+    all_best_score = []
+    all_time = []
+
+    log.info("-------RUNNING HILLCLIMB RESTART VERSION-------")
+    for i in range(iter):
+        start = timeit.default_timer()
+        num_evaluations, best_score, best = test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operator)
+        stop = timeit.default_timer()
+        log.debug('time : %f' % (stop - start))
+        all_num_evaluations.append(num_evaluations)
+        all_best_score.append(best_score)
+        all_time.append(stop - start)
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r" % (graph.get_nbVertices(), nbk, delta_max, mu))
+    log.info("for %d iteration with %d max_evaluations each, "
+             "\n total time in sec : %r"
+             "\n best score found is %d,"
+             "\n mean time in sec : %r,"
+             "\n mean best_score : %r, EcT : %r"
+             "\n mean num_eval : %r"
+             % (iter,
+                max_eval,
+                sum(all_time),
+                min(score for score in all_best_score),
+                statistics.mean(all_time),
+                statistics.mean(all_best_score), statistics.stdev(all_best_score),
+                statistics.mean(all_num_evaluations)))
+
+if __name__ == '__main__':
+    max_evaluations = 100
+    delta_max = 3
+    nbK = 3
+    mu = .5
+    iter = 100
+    reader = lectureFichier.Reader('../../fichiersGraphes/dixSommets.txt')
+    # reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
+    reader.readFile()
+    graph = reader.g
+    move_operator = pick_gen
+
+    main(graph, nbK, delta_max, mu, max_evaluations, iter, move_operator)
