@@ -5,7 +5,7 @@ by Baptiste MASSET & Norbert Feron
 Usage:
     main.py enum <path> [--nbk=N --delta_max=N --mu=N]
     main.py hc <path> [--nbk=N --delta_max=N --mu=N] --max_eval=N --iter=N --move=op [-r] [--mproc]
-    main.py ts <path> [--nbk=N --delta_max=N --mu=N] --max_eval=N --iter=N --move=op [--mproc]
+    main.py ts <path> [--nbk=N --delta_max=N --mu=N --tabu=N] --max_eval=N --iter=N --move=op [--mproc]
     main.py sa <path> [--nbk=N --delta_max=N --mu=N] --temp=N --alpha=N --max_eval=N --iter=N --move=op [--mproc]
     main.py (-h | --help)
     main.py --version
@@ -19,6 +19,7 @@ Options:
     --alpha=N           Set the cooling coefficient for simulated annealing [default: 0.95]
     --max_eval=N        Set the max number of evaluating a solution
     --iter=N            Set the number of repeated execution (for loop)
+    --tabu=N            Set the tabu queue size [default: 10]
     -r                  Restart hillclimb until max_eval is reached
     --move=op           Set the move operator for elementary move to another solution ( pNd ; swap ; sweep )
     --mproc             Running multi proc version of algorithms
@@ -74,14 +75,15 @@ if __name__ == '__main__':
                 test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath, arguments['-r'])
 
         elif arguments['ts']:
+            tabuSize = int(arguments['--tabu'])
             if arguments['--mproc']:
-                mproc_tabu.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
+                mproc_tabu.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, tabuSize, logsPath)
             else:
-                test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
+                test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, tabuSize, logsPath)
         elif arguments['sa']:
             temp = int(arguments['--temp'])
             alpha = float(arguments['--alpha'])
             if arguments['--mproc']:
-                mproc_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator,logsPath)
+                mproc_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, logsPath)
             else:
                 test_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, logsPath)
