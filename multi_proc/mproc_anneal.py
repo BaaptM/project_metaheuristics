@@ -4,11 +4,9 @@ import logging
 import timeit
 import statistics
 
-from tools import voisinageGraphe
-
-DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
-sys.path.append(DOSSIER_PARENT)
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from graphstructure import lectureFichier
 from hillclimb import hc
@@ -22,12 +20,14 @@ log = logging.getLogger(__name__)
 
 def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu,  temp, alpha, nbk):
     def init_function():
-        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, move_operator, graph.get_score, max_evaluations, delta_max, mu)
-        return best
+        return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
 
     def init_function_hillclimbing():
-        return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
+        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, move_operator, graph.get_score,
+                                                         max_evaluations, delta_max, mu)
+        return best
+
 
     log.debug('Start process number : %d' % iter)
     start = timeit.default_timer()
