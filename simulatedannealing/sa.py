@@ -6,9 +6,10 @@ from tools import enumGraphe
 log = logging.getLogger(__name__)
 
 
-#### struct to store best solution & score known
-#### so ObjectiveFunction is a callable function and also store best sol
 class ObjectiveFunction:
+    # struct to store best solution & score known
+    # so ObjectiveFunction is a callable function and also store best sol
+
     def __init__(self, objective_function):
         self.objective_function = objective_function
         self.best = None
@@ -23,18 +24,18 @@ class ObjectiveFunction:
         return score
 
 
-#### probabilistically choosing a neighbour
-#### return acceptation probability
 def P(prev_score, next_score, temperature):
+    # probabilistically choosing a neighbour
+    # @return acceptation probability
     if next_score < prev_score:
         return 1.0
     else:
         return math.exp(-abs(prev_score - next_score) / temperature)
 
 
-#### cooling schedule
-#### get start_temp cooling by alpha=[0,1]
 def kirkpatrick_cooling(start_temp, alpha):
+    # cooling schedule
+    # get start_temp cooling by alpha=[0,1]
     T = start_temp
     while True:
         yield T
@@ -63,7 +64,7 @@ def anneal(init_function, move_operator, objective_function, max_evaluations, st
             next_score = objective_function(next, mu)
             num_evaluations += 1
 
-            # probablistically accept this solution
+            # probabilistically accept this solution
             # always accepting better solutions
             p = P(current_score, next_score, temperature)
             if random.random() < p:

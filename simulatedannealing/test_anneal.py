@@ -18,13 +18,15 @@ log = logging.getLogger(__name__)
 
 def test_file_sa(graph, nbk, delta_max, mu, temp, alpha, max_eval, move_operator):
     def init_function_hillclimb():
-        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimb, move_operator, graph.get_score, max_eval, delta_max, mu)
+        num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimb, move_operator, graph.get_score,
+                                                         max_eval, delta_max, mu)
         return best
 
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
-    num_evaluations, best_score, best, temp = sa.anneal(init_function, move_operator, graph.get_score, max_eval, temp, alpha, delta_max, mu)
+    num_evaluations, best_score, best, temp = sa.anneal(init_function, move_operator, graph.get_score, max_eval, temp,
+                                                        alpha, delta_max, mu)
     log.debug(best)
     return num_evaluations, best_score, best, temp
 
@@ -46,14 +48,16 @@ def main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, 
     log.info("-------RUNNING SIMULATED ANNEALING-------")
     for i in range(iter):
         start = timeit.default_timer()
-        num_evaluations, best_score, best, temperature = test_file_sa(graph, nbk, delta_max, mu, temp, alpha, max_eval, move_operator)
+        num_evaluations, best_score, best, temperature = test_file_sa(graph, nbk, delta_max, mu, temp, alpha, max_eval,
+                                                                      move_operator)
         stop = timeit.default_timer()
         log.debug('time : %f' % (stop - start))
         all_temp.append(temperature)
         all_num_evaluations.append(num_evaluations)
         all_best_score.append(best_score)
         all_time.append(stop - start)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; start_temp = %r; alpha = %r" % (graph.get_nbVertices(), nbk, delta_max, mu, temp, alpha))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; start_temp = %r; alpha = %r" % (graph.get_nbVertices(), nbk,
+                                                                                           delta_max, mu, temp, alpha))
     log.info("\n for %d iteration with %d max_evaluations each,"
              "\n best score found is %d,"
              "\n total time in sec : %r"

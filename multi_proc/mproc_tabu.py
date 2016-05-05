@@ -13,7 +13,6 @@ from tabusearch.ts import tabusearch
 from itertools import repeat
 from tools.enumGraphe import get_random_soluce
 from multiprocessing import Pool, cpu_count
-from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
 
@@ -26,7 +25,7 @@ def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
 
     log.debug('Start process number : %d' %iter)
     start = timeit.default_timer()
-    num_evaluations, best_score, best = tabusearch(init_function, pick_gen, graph.get_score,
+    num_evaluations, best_score, best = tabusearch(init_function, move_operator, graph.get_score,
                                                   max_evaluations, delta_max, mu)
     stop = timeit.default_timer()
     log.debug('time : %f' % (stop - start))
@@ -49,8 +48,8 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     nb_proc = cpu_count()
     pool = Pool(processes=nb_proc)
     startWork = timeit.default_timer()
-    # results = pool.map(doWork, range(iter))
-    results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(nbk)))
+    results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval),
+                                       repeat(delta_max), repeat(mu), repeat(nbk)))
     stopWork = timeit.default_timer()
     timeWork = (stopWork - startWork)
 
@@ -82,6 +81,8 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
                 statistics.mean(all_num_evaluations)))
 
 if __name__ == '__main__':
+    from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
+
     if len(sys.argv) != 2:
         lectureFichier.usage(sys.argv[0])
         exit()

@@ -14,24 +14,23 @@ from itertools import repeat
 from multiprocessing import Pool,cpu_count
 from simulatedannealing import sa
 from tools.enumGraphe import get_random_soluce
-from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
+
 
 def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu,  temp, alpha, nbk):
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
-
 
     def init_function_hillclimbing():
         num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimbing, move_operator, graph.get_score,
                                                          max_evaluations, delta_max, mu)
         return best
 
-
     log.debug('Start process number : %d' % iter)
     start = timeit.default_timer()
-    num_evaluations, best_score, best, temp = sa.anneal(init_function, move_operator, graph.get_score, max_evaluations, temp, alpha, delta_max, mu)
+    num_evaluations, best_score, best, temp = sa.anneal(init_function, move_operator, graph.get_score, max_evaluations,
+                                                        temp, alpha, delta_max, mu)
     stop = timeit.default_timer()
     log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, temp, (stop - start)
@@ -55,7 +54,8 @@ def main(graph, nbk, delta_max, mu,  temp, alpha, max_eval, iter, move_operator,
     pool = Pool(processes=nb_proc)
     log.info("-------MULTI_PROC SIMULATED ANNEALING-------")
     startWork = timeit.default_timer()
-    results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(temp), repeat(alpha), repeat(nbk)))
+    results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval),
+                                       repeat(delta_max), repeat(mu), repeat(temp), repeat(alpha), repeat(nbk)))
     stopWork = timeit.default_timer()
     timeWork = (stopWork - startWork)
 
@@ -71,7 +71,8 @@ def main(graph, nbk, delta_max, mu,  temp, alpha, max_eval, iter, move_operator,
         all_time.append(time)
 
     log.info("Running on %d proc" % nb_proc)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; start_temp = %r; alpha = %r" % (graph.get_nbVertices(), nbk, delta_max, mu, temp, alpha))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; start_temp = %r; alpha = %r" % (graph.get_nbVertices(), nbk,
+                                                                                           delta_max, mu, temp, alpha))
     log.info("for %d iteration with %d max_evaluations each, "
              "\n best score found is %d,"
              "\n total time in sec : %r"
@@ -89,6 +90,8 @@ def main(graph, nbk, delta_max, mu,  temp, alpha, max_eval, iter, move_operator,
                                                statistics.mean(all_temp)))
 
 if __name__ == '__main__':
+    from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
+
     if len(sys.argv) != 2:
         lectureFichier.usage(sys.argv[0])
         exit()

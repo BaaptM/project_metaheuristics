@@ -105,7 +105,8 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, res
     for i in range(iter):
         start = timeit.default_timer()
         if restart:
-            num_evaluations, best_score, best = test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operator)
+            num_evaluations, best_score, best = test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval,
+                                                                           move_operator)
         else:
             num_evaluations, best_score, best = test_file_hillcimb(graph, nbk, delta_max, mu, max_eval, move_operator)
         stop = timeit.default_timer()

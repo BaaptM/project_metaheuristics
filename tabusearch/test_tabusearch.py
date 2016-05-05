@@ -4,7 +4,6 @@ import os
 import timeit
 import statistics
 
-
 PACKAGE_PARENT = '..'
 SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
@@ -62,7 +61,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
                 statistics.mean(all_num_evaluations)))
 
 if __name__ == '__main__':
-    from tools.voisinageGraphe import pick_gen
+    from tools.voisinageGraphe import pick_gen, sweep_gen, swap_gen
 
     if len(sys.argv) != 2:
         lectureFichier.usage(sys.argv[0])

@@ -3,6 +3,7 @@ from tools.enumGraphe import validate_solution
 
 log = logging.getLogger(__name__)
 
+
 def hillclimb(init_function,move_operator,objective_function,max_evaluations, delta_max, mu):
 
     best=init_function()
@@ -32,11 +33,12 @@ def hillclimb(init_function,move_operator,objective_function,max_evaluations, de
             break # couldn't find a better move
     
     log.debug('hillclimb finished: num_evaluations=%d , best_score=%d' % (num_evaluations, best_score))
-    return (num_evaluations,best_score,best)
+    return num_evaluations,best_score,best
 
 
-##### hillclimbing with restart implementation: repeat hillclimb until max_evaluations is reached
 def hillclimb_and_restart(init_function,move_operator,objective_function,max_evaluations, delta_max, mu):
+    # hillclimbing with restart implementation: repeat hillclimb until max_evaluations is reached
+
     best=None
     best_score=0
     
@@ -45,13 +47,14 @@ def hillclimb_and_restart(init_function,move_operator,objective_function,max_eva
         remaining_evaluations=max_evaluations-num_evaluations
 
         log.debug('(re)starting hillclimb %d/%d remaining' % (remaining_evaluations,max_evaluations))
-        evaluated,score,found=hillclimb(init_function,move_operator,objective_function,remaining_evaluations, delta_max, mu)
+        evaluated,score,found=hillclimb(init_function,move_operator,objective_function,remaining_evaluations, delta_max,
+                                        mu)
         
         num_evaluations+=evaluated
         if score > best_score or best is None:
             best_score=score
             best=found
         
-    return (num_evaluations,best_score,best)
+    return num_evaluations,best_score,best
 
 

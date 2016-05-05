@@ -3,6 +3,7 @@ from tools import enumGraphe
 
 log = logging.getLogger(__name__)
 
+
 def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
     # function to partition with the less interclasses weight by enumeration
     # @param graph the graph to be partitioned
@@ -38,7 +39,7 @@ def get_best_sol_enumeration(graph, objective_function, nbK, delta_max, mu):
                 if not contain:
                     current_sol.append(sol)
         log.debug('minimum weight interclass for %s Classes is %s' % (nbK, current_weight))
-    return (current_weight, current_sol)
+    return current_weight, current_sol
 
 
 

@@ -9,6 +9,7 @@ def usage(prog):
 def isComment(letter):
     return (letter == '#')
 
+
 class Reader():
 
     def readFile(self):

@@ -3,6 +3,7 @@ from tools.enumGraphe import validate_solution
 
 log = logging.getLogger(__name__)
 
+
 def tabusearch(init_function,move_operator,objective_function,max_evaluations,delta_max, mu):
 
     tabuList = []
@@ -32,4 +33,4 @@ def tabusearch(init_function,move_operator,objective_function,max_evaluations,de
         if not move_made:
             break # couldn't find a better move
     log.debug('tabusearch finished: num_evaluations=%d , best_score=%d' % (num_evaluations, best_score))
-    return (num_evaluations,best_score,best)
+    return num_evaluations,best_score,best

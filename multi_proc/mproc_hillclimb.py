@@ -13,7 +13,6 @@ from hillclimb.hc import hillclimb, hillclimb_and_restart
 from itertools import repeat
 from tools.enumGraphe import get_random_soluce
 from multiprocessing import Pool, cpu_count
-from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
 
@@ -31,6 +30,7 @@ def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
     log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, (stop - start)
 
+
 def doWorkRestart(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
 
     def init_function():
@@ -44,8 +44,8 @@ def doWorkRestart(iter, graph, move_operator, max_evaluations, delta_max, mu, nb
     log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, (stop - start)
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, restart):
 
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, restart):
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     if restart:
@@ -65,9 +65,11 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, res
     pool = Pool(processes=nb_proc)
     startWork = timeit.default_timer()
     if restart:
-        results = pool.starmap(doWorkRestart, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(nbk)))
+        results = pool.starmap(doWorkRestart, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval),
+                                                  repeat(delta_max), repeat(mu), repeat(nbk)))
     else :
-        results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(nbk)))
+        results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval),
+                                           repeat(delta_max), repeat(mu), repeat(nbk)))
     pool.close()
     pool.join()
     stopWork = timeit.default_timer()
@@ -104,8 +106,9 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, res
                 statistics.mean(all_num_evaluations)))
 
 
-
 if __name__ == '__main__':
+    from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
+
     if len(sys.argv) != 2:
         lectureFichier.usage(sys.argv[0])
         exit()

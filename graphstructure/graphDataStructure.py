@@ -1,6 +1,7 @@
 import sys
 from tools import enumGraphe
 
+
 class Vertex:
     def __init__(self, node):
         self.id = node
@@ -23,6 +24,7 @@ class Vertex:
 
     def get_degree(self):
         return len(self.get_connections())
+
 
 class Graph:
     def __init__(self):
@@ -159,7 +161,7 @@ if __name__ == '__main__':
     classes = [[0, 1, 2, 3], [4, 5]]
 
     weight_inter_classes = graph.get_weight_inter(classes)
-    print('weight interclasses intended 17 have got : %s' %weight_inter_classes)
+    print('weight interclasses intended 9 have got : %s' %weight_inter_classes)
 
 
 
