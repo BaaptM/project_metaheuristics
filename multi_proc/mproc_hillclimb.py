@@ -35,7 +35,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
 
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('mproc_hillclimbing.log')
+    fh = logging.FileHandler('logs/mproc_hillclimbing.log')
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
