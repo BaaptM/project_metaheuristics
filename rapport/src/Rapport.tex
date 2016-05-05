@@ -15,6 +15,10 @@
 \lstset{language=Python}
 \begin{document}
 
+% Math-mode symbol & verbatim
+\def\X#1{$#1$ &\tt\string#1}
+
+
 \begin{titlepage}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}} 
 \center 
@@ -76,7 +80,7 @@ Marc Michel \textsc{Corsini}
 
 \newpage
 \section{Introduction}
-Dans le cadre du cours de recherche opérationnel de master 1 informatique a l'université de Bordeaux, ce projet a pour but de mettre en pratique des algorithmes et méta-algorithme, tel que la descente de gradient, le Recuit simulé ou encore la méthode Tabou. Pour cela nous disposons de graphes pondérés de différentes taille (de 5-7 sommets a plus de milles), sur lesquelles nous allons tester et comparé les résultats de nos différents algorithme appliqué au problème de partitionnement de graphe en classes à peu près équitables.
+Dans le cadre du cours de recherche opérationnel de master 1 informatique a l'université de Bordeaux, ce projet a pour but de mettre en pratique des algorithmes et méta-algorithme, tel que la descente de gradient, le Recuit simulé ou encore la méthode Tabou. Pour cela nous disposons de graphes pondérés de différentes taille (de 5-7 sommets à plus de milles), sur lesquelles nous allons tester et comparé les résultats de nos différents algorithme appliqué au problème de partitionnement de graphe en classes à peu près équitables.
 
 \subsection{Le problème}
 Notre problème: partitionner un graphe en K classes en minimisant le poids interclasses. Cela consistes à placer chaque sommet du graphe dans une des classe de manières à réduire le somme du poids des arrêtes n'appartenant pas à la même classe.
@@ -84,15 +88,20 @@ Notre problème: partitionner un graphe en K classes en minimisant le poids inte
 \subsection{Nombre de classes}
 Nous avons choisi de laisser le nombre de classes libre, l'utilisateur lance donc les algorithmes en donnant comme entrée un graphe pondéré et un nombre de classe. 
 
-\subsection{Définition de l'équitable}
+\subsection{Définition de l'équité}
 
-Nous avons choisi de ne pas implémenter la notion  d'équilibre entre les classes dans nos méta-algorithmes, l'utilisateur dispose d'un variable supplémentaire appelé delta\_max; elle correspond à l'écart maximum entre les classes pour qu'une solution soit considérée comme valide et puisse être retournée en sortie des différents algorithmes utilisés dans ce projet.
+Nous avons choisi de ne pas implémenter la notion  d'équilibre entre les classes dans nos méta-algorithmes, l'utilisateur dispose d'un variable supplémentaire appelé delta\_max; elle correspond à l'écart maximum entre les classes pour qu'une solution soit considérée comme valide et puisse être retournée en sortie des différents algorithmes utilisés dans ce projet.\\
 
+De plus, le score des solutions est pénalisé par la différence du nombre de sommets dans les classes fois une constante appelé ``mu''. Plus la disparité entre les classes sera grande plus la pénalité sera élevée.
+
+\subsection{Fonction à optimiser}
+L'objectif du projet est de minimiser la somme du poids des arrêtes interclasses, nous retenons donc les solutions dont le score est le plus faible. Le calcul du score est : 
+\begin{center}
+$\sum\limits_{i} \sum\limits_{j}  \omega (i,j)) + \mu * c(\delta)$
+\end{center}
 
 \section{Méthode d’énumération}
-La solution la plus simple consiste à énumérer toutes les solutions valides et de calculer la somme du poids des arrêtes interclasses, les solutions avec la somme des poids plus faible sont retournées en résultats de l'algorithme d'énumération. Les solutions retournées sont donc toujours les solutions optimales, cependant la puissance de nos calculateurs fait défaut et en dépassant un nombre de sommets ou en demandant un partitionnement avec plusieurs classes, nos ordinateurs ne dispose pas d'un puissance de calcul suffisante et l'énumération des solutions devient impossible.
-
-\subsection{Test et limite}
+La solution la plus simple consiste à énumérer toutes les solutions valides et de calculer la somme du poids des arrêtes interclasses, les solutions avec le meilleur score sont retournées en résultats de l'algorithme d'énumération. Les solutions retournées sont donc toujours les solutions optimales, cependant la puissance de nos calculateurs fait défaut et en dépassant un nombre maximum de sommets, nos ordinateurs ne dispose pas d'un puissance de calcul suffisante et l'énumération des solutions devient impossible.
 
 \section{Descente de Gradient}
 
@@ -100,7 +109,511 @@ La solution la plus simple consiste à énumérer toutes les solutions valides e
 
 \section{Méthode Tabou}
 
+\section{Test \& Résultats}
+
+\subsection{Algorithme d'énumération}
+\subsubsection{4 Sommets en 2 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------ENUMERATE-------
+nbS = 4; nbK = 2; delta_max = 3; mu = 1.0
+best score is : 1,
+ total time : 0.00038140779361128807
+-------ENUMERATE-------
+nbS = 4; nbK = 2; delta_max = 3; mu = 0.5
+best score is : 1,
+ total time : 0.00037381192669272423
+-------ENUMERATE-------
+nbS = 4; nbK = 2; delta_max = 3; mu = 0.0
+best score is : 1,
+ total time : 0.0003458610735833645
+\end{verbatim}
+\subsubsection{5 Sommets en 2 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------ENUMERATE-------
+nbS = 5; nbK = 2; delta_max = 3; mu = 1.0
+best score is : 3,
+ total time : 0.0008135139942169189
+-------ENUMERATE-------
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.5
+best score is : 3,
+ total time : 0.0008682990446686745
+-------ENUMERATE-------
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.0
+best score is : 3,
+ total time : 0.0007814168930053711
+\end{verbatim}
+\subsubsection{20 Sommets en 2 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------ENUMERATE-------
+nbS = 20; nbK = 2; delta_max = 3; mu = 1.0
+best score is : 39,
+ total time : 163.1898413640447
+-------ENUMERATE-------
+nbS = 20; nbK = 2; delta_max = 3; mu = 0.5
+best score is : 39,
+ total time : 160.39260955667123
+-------ENUMERATE-------
+nbS = 20; nbK = 2; delta_max = 3; mu = 0.0
+best score is : 39,
+ total time : 164.47484961291775
+\end{verbatim}
+
+\subsection{Descente de Gradient}
+\subsubsection{5 Sommets en 2 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.10310757299885154
+ best score found is 3,
+ mean time in sec : 0.001071562976576388,
+ mean best_score : 3.63, EcT : 0.1714466079977652
+ mean num_eval : 7.07
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.10206909896805882
+ best score found is 3,
+ mean time in sec : 0.0012981305923312903,
+ mean best_score : 3.36, EcT : 0.23868325657594203
+ mean num_eval : 6.82
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.10367809794843197
+ best score found is 3,
+ mean time in sec : 0.0010838805558159947,
+ mean best_score : 3.05, EcT : 0.2190429135575903
+ mean num_eval : 6.94
+\end{verbatim}
+\subsubsection{15 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.2024659407325089
+ best score found is 58,
+ mean time in sec : 0.023689089985564352,
+ mean best_score : 61.010000000000005, EcT : 1.1520293907586374
+ mean num_eval : 21.36
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.20349178183823824
+ best score found is 58,
+ mean time in sec : 0.024920869143679737,
+ mean best_score : 61.01, EcT : 1.2956414892580694
+ mean num_eval : 21.34
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.2024315781891346
+ best score found is 59,
+ mean time in sec : 0.020131065961904823,
+ mean best_score : 61.58, EcT : 1.464599093626138
+ mean num_eval : 18.2
+\end{verbatim}
+\subsubsection{20 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.9040888692252338
+ best score found is 53,
+ mean time in sec : 0.11574626796413214,
+ mean best_score : 56.768, EcT : 1.9256052439572229
+ mean num_eval : 90.18
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.8043653820641339
+ best score found is 53,
+ mean time in sec : 0.11241874734871089,
+ mean best_score : 56.617000000000004, EcT : 1.7737026842515662
+ mean num_eval : 90.2
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.8047608300112188
+ best score found is 53,
+ mean time in sec : 0.09706705980934202,
+ mean best_score : 57.68, EcT : 2.3989896863370452
+ mean num_eval : 80.08
+\end{verbatim}
+\subsubsection{50 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 14.029909709934145
+ best score found is 288,
+ mean time in sec : 2.0499937719944863,
+ mean best_score : 310.6014, EcT : 7.05828047563479
+ mean num_eval : 100
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 14.246775717940181
+ best score found is 292,
+ mean time in sec : 2.059209058196284,
+ mean best_score : 312.4839, EcT : 6.499423112706218
+ mean num_eval : 100
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 13.881034784018993
+ best score found is 294,
+ mean time in sec : 2.0022386860102417,
+ mean best_score : 310.4, EcT : 6.935489175322106
+ mean num_eval : 100
+\end{verbatim}
+\subsubsection{100 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 100; nbK = 4; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 275.9682481228374
+ best score found is 1430,
+ mean time in sec : 40.02110815170687,
+ mean best_score : 1476.0958, EcT : 14.049210494371259
+ mean num_eval : 100
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 100; nbK = 4; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 278.2741830400191
+ best score found is 1451,
+ mean time in sec : 40.016724326196126,
+ mean best_score : 1475.13245, EcT : 12.389276001686275
+ mean num_eval : 100
+-------MULTI_PROC HILLCLIMB-------
+Running on 16 proc
+nbS = 100; nbK = 4; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 274.8639584830962
+ best score found is 1444,
+ mean time in sec : 39.720520393801856,
+ mean best_score : 1472.87, EcT : 13.68967390835778
+ mean num_eval : 100
+\end{verbatim}
+
+\subsection{Recuit Simulé}
+\subsubsection{5 Sommets en 2 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 1.0; start_temp = 0.89242491504672; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 3,
+ total time in sec : 0.15890276758000255
+ mean time in sec : 0.019896002300083638,
+ mean best_score : 3.6, EcT : 0.0
+ mean num_eval : 100,
+ mean end temperature : 1.0925721940968705
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.5; start_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 3,
+ total time in sec : 0.14763296116143465
+ mean time in sec : 0.019895954332314433,
+ mean best_score : 3.3, EcT : 0.0
+ mean num_eval : 100,
+ mean end temperature : 1.1712864838845436
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.0; start_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 3,
+ total time in sec : 0.135501594748348
+ mean time in sec : 0.018298799749463798,
+ mean best_score : 3.0, EcT : 0.0
+ mean num_eval : 100,
+ mean end temperature : 1.2735855241323177
+\end{verbatim}
+\subsubsection{15 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 1.0; start_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 58,
+ total time in sec : 1.479973640292883
+ mean time in sec : 0.21311060020234435,
+ mean best_score : 60.56866666666667, EcT : 1.3138118050294691
+ mean num_eval : 100,
+ mean end temperature : 1.3772049646765163
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.5; start_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 58,
+ total time in sec : 1.5027663107030094
+ mean time in sec : 0.21560919662937522,
+ mean best_score : 60.43933333333334, EcT : 1.4292077498978677
+ mean num_eval : 100,
+ mean end temperature : 1.4315769926409938
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.0; start_temp = 1.4159869113351014; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 58,
+ total time in sec : 1.4449690897017717
+ mean time in sec : 0.20822494091000407,
+ mean best_score : 60.05, EcT : 1.3361712223190316
+ mean num_eval : 100,
+ mean end temperature : 1.494534520905948
+\end{verbatim}
+\subsubsection{20 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 1.0; start_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 58,
+ total time in sec : 2.100551615934819
+ mean time in sec : 0.30202195783145724,
+ mean best_score : 63.7975, EcT : 2.5055027822613165
+ mean num_eval : 100,
+ mean end temperature : 1.313465545276881
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.5; start_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 56,
+ total time in sec : 2.204790683928877
+ mean time in sec : 0.32301434411667285,
+ mean best_score : 63.796, EcT : 2.8453504515119383
+ mean num_eval : 100,
+ mean end temperature : 1.3380972607900203
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.0; start_temp = 1.6515374385013575; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 56,
+ total time in sec : 2.155007839668542
+ mean time in sec : 0.3094922862760723,
+ mean best_score : 63.9, EcT : 2.8762349126466136
+ mean num_eval : 100,
+ mean end temperature : 1.3314336387531318
+\end{verbatim}
+\subsubsection{50 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 1.0; start_temp = 2.2467088258818433; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 304,
+ total time in sec : 19.639723698608577
+ mean time in sec : 2.8562343602767215,
+ mean best_score : 327.0544, EcT : 7.9476169250838185
+ mean num_eval : 100,
+ mean end temperature : 1.5985980839004053
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.5; start_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 312,
+ total time in sec : 19.559158163145185
+ mean time in sec : 2.8592799879610538,
+ mean best_score : 327.18489999999997, EcT : 6.5545652985171525
+ mean num_eval : 100,
+ mean end temperature : 1.562941702556063
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.0; start_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 314,
+ total time in sec : 19.80668053869158
+ mean time in sec : 2.875196288712323,
+ mean best_score : 326.67, EcT : 6.72107344721275
+ mean num_eval : 100,
+ mean end temperature : 1.598711134190034
+\end{verbatim}
+\subsubsection{100 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 100; nbK = 4; delta_max = 3; mu = 1.0; start_temp = 1.926271979590445; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 1463,
+ total time in sec : 306.5104563161731
+ mean time in sec : 44.28779415917583,
+ mean best_score : 1497.5357999999999, EcT : 14.775266268089023
+ mean num_eval : 100,
+ mean end temperature : 1.8711562858658632
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 100; nbK = 4; delta_max = 3; mu = 0.5; start_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 1463,
+ total time in sec : 306.9560006177053
+ mean time in sec : 44.25927069529891,
+ mean best_score : 1495.07265, EcT : 13.933485200256166
+ mean num_eval : 100,
+ mean end temperature : 1.8438790330748873
+-------MULTI_PROC SIMULATED ANNEALING-------
+Running on 16 proc
+nbS = 100; nbK = 4; delta_max = 3; mu = 0.0; start_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ best score found is 1462,
+ total time in sec : 305.0477506122552
+ mean time in sec : 44.03396145147271,
+ mean best_score : 1497.22, EcT : 14.388954798803846
+ mean num_eval : 100,
+ mean end temperature : 1.8231735690116595
+\end{verbatim}
+
+\subsection{Méthode Tabou}
+\subsubsection{5 Sommets en 2 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.017625250853598118
+ best score found is 3,
+ mean time in sec : 0.0014280724758282304,
+ mean best_score : 3.72, EcT : 0.32659863237109027
+ mean num_eval : 2.28
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.020844256971031427
+ best score found is 3,
+ mean time in sec : 0.0016844153171405197,
+ mean best_score : 3.3099999999999996, EcT : 0.1
+ mean num_eval : 2.28
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.016749583650380373
+ best score found is 3,
+ mean time in sec : 0.0011243263492360712,
+ mean best_score : 3.05, EcT : 0.2190429135575903
+ mean num_eval : 2.34
+\end{verbatim}
+\subsubsection{15 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.15875420486554503
+ best score found is 58,
+ mean time in sec : 0.021858335416764022,
+ mean best_score : 61.25, EcT : 1.0384039812533599
+ mean num_eval : 3.3
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.18269887520000339
+ best score found is 59,
+ mean time in sec : 0.022573766084387898,
+ mean best_score : 60.910000000000004, EcT : 1.0415121097459572
+ mean num_eval : 3.37
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.15549310809001327
+ best score found is 58,
+ mean time in sec : 0.019807322970591484,
+ mean best_score : 61.51, EcT : 1.534090722035155
+ mean num_eval : 2.78
+\end{verbatim}
+\subsubsection{20 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.9273185259662569
+ best score found is 53,
+ mean time in sec : 0.13213871700689198,
+ mean best_score : 55.864, EcT : 1.6160664302777619
+ mean num_eval : 13
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 1.029785099439323
+ best score found is 53,
+ mean time in sec : 0.1434148733271286,
+ mean best_score : 55.523, EcT : 1.3498394966316054
+ mean num_eval : 13.32
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 0.761064148042351
+ best score found is 53,
+ mean time in sec : 0.10573584100231528,
+ mean best_score : 57.6, EcT : 2.4329389468689753
+ mean num_eval : 9.31
+\end{verbatim}
+\subsubsection{50 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 98.10643908800557
+ best score found is 266,
+ mean time in sec : 14.21196602887474,
+ mean best_score : 276.8064, EcT : 5.5716967874166565
+ mean num_eval : 44.07
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 104.85385024594143
+ best score found is 267,
+ mean time in sec : 14.863117454447783,
+ mean best_score : 275.96779999999995, EcT : 4.811031217289839
+ mean num_eval : 44.91
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen
+for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 67.86398608796299
+ best score found is 268,
+ mean time in sec : 9.82464586332906,
+ mean best_score : 281.76, EcT : 5.747410484098666
+ mean num_eval : 30.92
+\end{verbatim}
+\subsubsection{100 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\begin{verbatim}
+
+\end{verbatim}
+
 \section{Comparaison des résultats}
+
+\subsection{Algorithme d'énumération}
+
+\subsection{Descente de Gradient}
+
+\subsection{Recuit Simulé}
+
+\subsection{Méthode Tabou}
+
+\section{Limites}
 
 \section{Conclusion}
 
