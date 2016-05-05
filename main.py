@@ -25,6 +25,7 @@ Options:
 """
 import docopt
 import sys
+import os
 import logging
 from enumerate.test_enumerate import test_enum
 from hillclimb import test_hillclimb
@@ -43,6 +44,9 @@ if __name__ == '__main__':
     nbk = int(arguments['--nbk'])
     delta_max = int(arguments['--delta_max'])
     mu = int(arguments['--mu'])
+
+    if not os.path.isdir("./logs"):
+        os.mkdir("./logs")
 
     if arguments['enum']:
         test_enum(graph, nbk, delta_max, mu)
