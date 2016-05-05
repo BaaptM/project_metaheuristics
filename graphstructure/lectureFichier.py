@@ -10,14 +10,6 @@ def isComment(letter):
     return (letter == '#')
 
 class Reader():
-    def __init__(self, file):
-        self.file = file
-        self.nbVertices = 0
-        self.nbEdges = 0
-        self.dmin = 0
-        self.dmax = 0
-        self.g = graphDataStructure.Graph()
-        self.degreeFileList = []
 
     def readFile(self):
         with open(self.file, 'r') as f:
@@ -37,6 +29,19 @@ class Reader():
                     if (cpt == 4):
                         self.degreeFileList.append(int(lines[i].split()[1]))
 
+    def __init__(self, file):
+        self.file = file
+        self.nbVertices = 0
+        self.nbEdges = 0
+        self.dmin = 0
+        self.dmax = 0
+        self.g = graphDataStructure.Graph()
+        self.degreeFileList = []
+        self.readFile()
+
+
+
+
 
 ###### MAIN ######
 if __name__ == '__main__':
@@ -45,8 +50,6 @@ if __name__ == '__main__':
         exit()
 
     reader = Reader(sys.argv[1])
-    reader.readFile()
-
     ######## ASSERT DEG == DEG FILE #########
     for i in range(0, len(reader.degreeFileList)):
         assert (reader.g.get_vertex(str(i + 1)).get_degree() == reader.degreeFileList[i])

@@ -28,9 +28,10 @@ def test_enum(graph, nbK, delta_max, mu):
              "\n total time : %r" % (weight, (stop - start)))
 
 if __name__ == '__main__':
-    reader = lf.Reader('../../fichiersGraphes/cinqSommets.txt')
-    # reader = lf.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
-    reader.readFile()
+    if len(sys.argv) != 2:
+        lf.usage(sys.argv[0])
+        exit()
+    reader = lf.Reader(sys.argv[1])
     graph = reader.g
     nbK = 3
     delta_max = 3

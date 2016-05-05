@@ -155,14 +155,15 @@ def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
                 statistics.mean(all_num_evaluations)))
 
 if __name__ == '__main__':
+    if (len(sys.argv) != 2):
+        lectureFichier.usage(sys.argv[0])
+        exit()
     max_evaluations = 100
     delta_max = 3
     nbK = 3
     mu = .5
     iter = 100
-    reader = lectureFichier.Reader('../../fichiersGraphes/dixSommets.txt')
-    # reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
-    reader.readFile()
+    reader = lectureFichier.Reader(sys.argv[1])
     graph = reader.g
     move_operator = pick_gen
 

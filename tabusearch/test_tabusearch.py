@@ -13,16 +13,6 @@ from tools.enumGraphe import get_random_soluce
 
 log = logging.getLogger(__name__)
 
-reader = lectureFichier.Reader('../../fichiersGraphes/cinqSommets.txt')
-#reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
-reader.readFile()
-graph = reader.g
-max_evaluations = 100
-delta_max = 3
-nbK = 3
-mu = .5
-iter = 100
-
 def test_file_tabusearch():
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbK, delta_max)
@@ -37,6 +27,18 @@ if __name__ == '__main__':
     import sys
     import timeit
     import statistics
+
+    if len(sys.argv) != 2:
+        lectureFichier.usage(sys.argv[0])
+        exit()
+
+    reader = lectureFichier.Reader(sys.argv[1])
+    graph = reader.g
+    max_evaluations = 100
+    delta_max = 3
+    nbK = 3
+    mu = .5
+    iter = 100
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     fh = logging.FileHandler('tabusearch.log')

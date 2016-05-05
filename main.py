@@ -4,7 +4,7 @@ by Baptiste MASSET & Norbert Feron
 
 Usage:
     main.py enum <path> --nbk=N --delta_max=N --mu=N
-    main.py hc <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [-r]
+    main.py hc <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [-r] [--mproc]
     main.py (-h | --help)
     main.py --version
 Arguments:
@@ -19,7 +19,7 @@ Options:
     --iter=N            Set the number of repeated execution (for loop)
     -r                  Restart hillclimb until max_eval is reached
     --move=op           Set the move operator for elementary move to another solution ( pNd ; swap ; sweep )
-    -mproc              Running multi proc version of algorithms
+    --mproc              Running multi proc version of algorithms
     -h --help           Show this screen.
     --version           Show version.
 """
@@ -27,9 +27,11 @@ import docopt
 import sys
 import logging
 from enumerate.test_enumerate import test_enum
-from hillclimb.test_hillclimb import main, mainRestart
+from hillclimb import test_hillclimb
+from multi_proc import mproc_hillclimb
 from graphstructure.lectureFichier import Reader
 from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
+
 log = logging.getLogger(__name__)
 
 if __name__ == '__main__':
@@ -37,12 +39,10 @@ if __name__ == '__main__':
 
     arguments = docopt.docopt(__doc__, version='Project META v1.0')
     reader = Reader(arguments['<path>'])
-    reader.readFile()
     graph = reader.g
     nbk = int(arguments['--nbk'])
     delta_max = int(arguments['--delta_max'])
     mu = int(arguments['--mu'])
-
 
     if arguments['enum']:
         test_enum(graph, nbk, delta_max, mu)
@@ -58,22 +58,17 @@ if __name__ == '__main__':
             move_operator = sweep_gen
 
         if arguments['hc']:
-            #if arguments['-mproc']:
-            #else:
-            if arguments['-r']:
-                mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+            if arguments['--mproc']:
+                mproc_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
             else:
-                main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
-    #todo implements the others
-        #if arguments['sa']:
-            # if arguments['-mproc']:
-            # else:
-        #if arguments['ts']:
-            # if arguments['-mproc']:
-            # else:
-
-
-
-
-
-#
+                if arguments['-r']:
+                    test_hillclimb.mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+                else:
+                    test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+        # todo implements the others
+        # if arguments['sa']:
+        # if arguments['-mproc']:
+        # else:
+        # if arguments['ts']:
+        # if arguments['-mproc']:
+        # else:

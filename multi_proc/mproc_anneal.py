@@ -19,7 +19,6 @@ log = logging.getLogger(__name__)
 
 reader = lectureFichier.Reader('../../fichiersGraphes/dixSommets.txt')
 #reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanteSommets.txt')
-reader.readFile()
 graph = reader.g
 
 #todo pass in command line parameters

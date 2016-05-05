@@ -12,21 +12,7 @@ from simulatedannealing import sa
 from graphstructure import lectureFichier
 from tools.enumGraphe import get_random_soluce
 
-
 log = logging.getLogger(__name__)
-#reader = lectureFichier.Reader('/net/stockage/nferon/data/cinquanSommets.txt')
-reader = lectureFichier.Reader('../../fichiersGraphes/dixSommets.txt')
-
-reader.readFile()
-graph = reader.g
-max_evaluations = 100
-nbK = 3
-delta_max = 3
-start_temp = 100
-alpha = .95
-mu = .5
-iter = 100
-
 
 def test_file_sa():
     def init_function():
@@ -45,6 +31,20 @@ if __name__ == '__main__':
     import sys
     import timeit
     import statistics
+
+    if (len(sys.argv) != 2):
+        lectureFichier.usage(sys.argv[0])
+        exit()
+
+    reader = lectureFichier.Reader(sys.argv[1])
+    graph = reader.g
+    max_evaluations = 100
+    nbK = 3
+    delta_max = 3
+    start_temp = 100
+    alpha = .95
+    mu = .5
+    iter = 100
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     fh = logging.FileHandler('simulated_annealing.log')
@@ -85,7 +85,3 @@ if __name__ == '__main__':
                                         statistics.stdev(all_best_score),
                                         statistics.mean(all_num_evaluations),
                                         statistics.mean(all_temp)))
-
-
-
-
