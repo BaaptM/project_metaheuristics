@@ -17,7 +17,7 @@ from multiprocessing import Pool, cpu_count
 log = logging.getLogger(__name__)
 
 
-def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
+def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk, tabuSize):
 
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
@@ -26,13 +26,13 @@ def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
     log.debug('Start process number : %d' %iter)
     start = timeit.default_timer()
     num_evaluations, best_score, best = tabusearch(init_function, move_operator, graph.get_score,
-                                                  max_evaluations, delta_max, mu)
+                                                  max_evaluations, delta_max, mu, tabuSize)
     stop = timeit.default_timer()
     log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, (stop - start)
 
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, tabuSize, logsPath):
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     fh = logging.FileHandler(logsPath + "/mproc_tabusearch.log")
@@ -49,7 +49,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     pool = Pool(processes=nb_proc)
     startWork = timeit.default_timer()
     results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval),
-                                       repeat(delta_max), repeat(mu), repeat(nbk)))
+                                       repeat(delta_max), repeat(mu), repeat(nbk), repeat(tabuSize)))
     stopWork = timeit.default_timer()
     timeWork = (stopWork - startWork)
 
@@ -65,7 +65,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
         all_best_score.append(best_score)
         all_time.append(time)
     log.info("Running on %d proc" % nb_proc)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; move_operator= %s" % (graph.get_nbVertices(), nbk, delta_max, mu, move_operator.__name__))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; move_operator= %s; tabu_maxsize = %d" % (graph.get_nbVertices(), nbk, delta_max, mu, move_operator.__name__, tabuSize))
     log.info("for %d iteration with %d max_evaluations each, "
              "\n total time in sec : %r"
              "\n best score found is %d,"
@@ -95,6 +95,7 @@ if __name__ == '__main__':
     iter = 100
     mu = .5
     move_operator = pick_gen
+    tabuSize = 10
     logsPath = "../logs/"
 
-    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator, logsPath)
+    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator, tabuSize, logsPath)
