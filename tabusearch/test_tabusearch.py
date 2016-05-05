@@ -45,7 +45,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
         all_num_evaluations.append(num_evaluations)
         all_best_score.append(best_score)
         all_time.append(stop - start)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r" % (graph.get_nbVertices(), nbk, delta_max, mu))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; move_operator= %s" % (graph.get_nbVertices(), nbk, delta_max, mu, move_operator.__name__))
     log.info("for %d iteration with %d max_evaluations each, "
              "\n best score found is %d,"
              "\n total time in sec : %r"
