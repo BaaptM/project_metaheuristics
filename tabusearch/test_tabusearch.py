@@ -29,7 +29,7 @@ def test_file_tabusearch(graph, nbk, delta_max, mu, max_eval, move_operator):
 
 def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('tabusearch.log')
+    fh = logging.FileHandler('logs/tabusearch.log')
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
