@@ -15,17 +15,17 @@ from tools.enumGraphe import get_random_soluce
 log = logging.getLogger(__name__)
 
 
-def test_file_tabusearch(graph, nbk, delta_max, mu, max_eval, move_operator):
+def test_file_tabusearch(graph, nbk, delta_max, mu, max_eval, move_operator, tabuSize):
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
     num_evaluations, best_score, best = ts.tabusearch(init_function, move_operator, graph.get_score,
-                                                      max_eval, delta_max, mu)
+                                                      max_eval, delta_max, mu, tabuSize)
     log.debug(best)
     return num_evaluations, best_score, best
 
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, tabuSize, logsPath):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
     fh = logging.FileHandler(logsPath + "/tabusearch.log")
     fh.setLevel(logging.INFO)
@@ -39,13 +39,13 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     log.info("-------RUNNING TABU SEARCH-------")
     for i in range(iter):
         start = timeit.default_timer()
-        num_evaluations, best_score, best = test_file_tabusearch(graph, nbk, delta_max, mu, max_eval, move_operator)
+        num_evaluations, best_score, best = test_file_tabusearch(graph, nbk, delta_max, mu, max_eval, move_operator, tabuSize)
         stop = timeit.default_timer()
         log.debug('time : %f' % (stop - start))
         all_num_evaluations.append(num_evaluations)
         all_best_score.append(best_score)
         all_time.append(stop - start)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; move_operator= %s" % (graph.get_nbVertices(), nbk, delta_max, mu, move_operator.__name__))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; move_operator= %s; tabu_maxsize = %d" % (graph.get_nbVertices(), nbk, delta_max, mu, move_operator.__name__, tabuSize))
     log.info("for %d iteration with %d max_evaluations each, "
              "\n best score found is %d,"
              "\n total time in sec : %r"
@@ -75,6 +75,7 @@ if __name__ == '__main__':
     nbk = 3
     mu = .5
     iter = 100
+    tabuSize = 10
     logsPath = "../logs/"
 
-    main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath)
+    main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, tabuSize, logsPath)
