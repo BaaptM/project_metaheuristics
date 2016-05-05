@@ -4,9 +4,9 @@ import logging
 import timeit
 import statistics
 
-DOSSIER_COURRANT = os.path.dirname(os.path.abspath(__file__))
-DOSSIER_PARENT = os.path.dirname(DOSSIER_COURRANT)
-sys.path.append(DOSSIER_PARENT)
+PACKAGE_PARENT = '..'
+SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.expanduser(__file__))))
+sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from hillclimb import hc
 from simulatedannealing import sa
@@ -17,11 +17,11 @@ log = logging.getLogger(__name__)
 
 
 def test_file_sa(graph, nbk, delta_max, mu, temp, alpha, max_eval, move_operator):
-    def init_function():
+    def init_function_hillclimb():
         num_evaluations, best_score, best = hc.hillclimb(init_function_hillclimb, move_operator, graph.get_score, max_eval, delta_max, mu)
         return best
 
-    def init_function_hillclimb():
+    def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
     num_evaluations, best_score, best, temp = sa.anneal(init_function, move_operator, graph.get_score, max_eval, temp, alpha, delta_max, mu)
