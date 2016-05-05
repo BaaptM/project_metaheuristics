@@ -30,10 +30,10 @@ def test_file_sa(graph, nbk, delta_max, mu, temp, alpha, max_eval, move_operator
     return num_evaluations, best_score, best, temp
 
 
-def main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator):
+def main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, logsPath):
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('logs/simulated_annealing.log')
+    fh = logging.FileHandler(logsPath + "/simulated_annealing.log")
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -73,10 +73,7 @@ def main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator):
                                         statistics.mean(all_temp)))
 
 if __name__ == '__main__':
-    import logging
-    import sys
-    import timeit
-    import statistics
+    from tools.voisinageGraphe import pick_gen
 
     if (len(sys.argv) != 2):
         lectureFichier.usage(sys.argv[0])
@@ -84,10 +81,14 @@ if __name__ == '__main__':
 
     reader = lectureFichier.Reader(sys.argv[1])
     graph = reader.g
-    max_evaluations = 100
-    nbK = 3
+    max_eval = 100
+    move_operator = pick_gen
+    nbk = 3
     delta_max = 3
-    start_temp = 100
+    temp = 100
     alpha = .95
     mu = .5
     iter = 100
+    logsPath = "../logs/"
+
+    main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, logsPath)

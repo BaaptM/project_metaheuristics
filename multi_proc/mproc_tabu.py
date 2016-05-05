@@ -33,10 +33,10 @@ def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
     return num_evaluations, best_score, best, (stop - start)
 
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('logs/mproc_tabusearch.log')
+    fh = logging.FileHandler(logsPath + "/mproc_tabusearch.log")
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -94,5 +94,6 @@ if __name__ == '__main__':
     iter = 100
     mu = .5
     move_operator = pick_gen
+    logsPath = "../logs/"
 
-    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator)
+    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator, logsPath)

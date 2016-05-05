@@ -49,8 +49,10 @@ if __name__ == '__main__':
     delta_max = int(arguments['--delta_max'])
     mu = int(arguments['--mu'])
 
-    if not os.path.isdir("./logs"):
-        os.mkdir("./logs")
+    logsPath = "./logs"
+
+    if not os.path.isdir(logsPath):
+        os.mkdir(logsPath)
 
     if arguments['enum']:
         test_enum(graph, nbk, delta_max, mu)
@@ -67,22 +69,22 @@ if __name__ == '__main__':
 
         if arguments['hc']:
             if arguments['--mproc']:
-                mproc_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+                mproc_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
             else:
                 if arguments['-r']:
-                    test_hillclimb.mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+                    test_hillclimb.mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
                 else:
-                    test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+                    test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
 
         elif arguments['ts']:
             if arguments['--mproc']:
-                mproc_tabu.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+                mproc_tabu.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
             else:
-                test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+                test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
         elif arguments['sa']:
             temp = int(arguments['--temp'])
             alpha = int(arguments['--alpha'])
             if arguments['--mproc']:
-                mproc_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator)
+                mproc_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator,logsPath)
             else:
-                test_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator)
+                test_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, logsPath)

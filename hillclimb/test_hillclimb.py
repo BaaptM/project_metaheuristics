@@ -11,7 +11,6 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 from graphstructure import lectureFichier
 from hillclimb.hc import hillclimb, hillclimb_and_restart
 from tools.enumGraphe import get_random_soluce
-from tools.voisinageGraphe import pick_gen
 
 log = logging.getLogger(__name__)
 
@@ -83,9 +82,9 @@ def test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operato
     return num_evaluations, best_score, best
 
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('logs/hillclimbing.log')
+    fh = logging.FileHandler(logsPath + "/hillclimbing.log")
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -120,9 +119,9 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
                 statistics.mean(all_num_evaluations)))
 
 
-def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
+def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('logs/hillclimbing.log')
+    fh = logging.FileHandler(logsPath + "/hillclimbing.log")
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -157,6 +156,7 @@ def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
                 statistics.mean(all_num_evaluations)))
 
 if __name__ == '__main__':
+    from tools.voisinageGraphe import pick_gen
     if (len(sys.argv) != 2):
         lectureFichier.usage(sys.argv[0])
         exit()
@@ -168,5 +168,6 @@ if __name__ == '__main__':
     reader = lectureFichier.Reader(sys.argv[1])
     graph = reader.g
     move_operator = pick_gen
+    logsPath = "../logs/"
 
-    main(graph, nbK, delta_max, mu, max_evaluations, iter, move_operator)
+    main(graph, nbK, delta_max, mu, max_evaluations, iter, move_operator, logsPath)

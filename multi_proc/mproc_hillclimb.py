@@ -31,11 +31,11 @@ def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
     log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, (stop - start)
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
 
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler('logs/mproc_hillclimbing.log')
+    fh = logging.FileHandler(logsPath + "/mproc_hillclimbing.log")
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -96,7 +96,8 @@ if __name__ == '__main__':
     iter = 100
     mu = .5
     move_operator = pick_gen
+    logsPath = "../logs/"
 
-    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator)
+    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator, logsPath)
 
 
