@@ -29,7 +29,7 @@ import docopt
 import sys
 import os
 import logging
-from enumerate.test_enumerate import test_enum
+from enumerate import test_enumerate
 from hillclimb import test_hillclimb
 from tabusearch import test_tabusearch
 from simulatedannealing import test_anneal
@@ -55,7 +55,7 @@ if __name__ == '__main__':
         os.mkdir(logsPath)
 
     if arguments['enum']:
-        test_enum(graph, nbk, delta_max, mu)
+        test_enumerate.main(graph, nbk, delta_max, mu, logsPath)
     else:
         max_eval = int(arguments['--max_eval'])
         iter = int(arguments['--iter'])
