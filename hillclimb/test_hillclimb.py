@@ -67,7 +67,7 @@ def test_file_hillcimb(graph, nbk, delta_max, mu, max_eval, move_operator):
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
-    num_evaluations, best_score, best = hillclimb(init_function, pick_gen, graph.get_score,
+    num_evaluations, best_score, best = hillclimb(init_function, move_operator, graph.get_score,
                                                   max_eval, delta_max, mu)
     log.debug(best)
     return num_evaluations, best_score, best
@@ -77,10 +77,11 @@ def test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operato
     def init_function():
         return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
 
-    num_evaluations, best_score, best = hillclimb_and_restart(init_function, pick_gen, graph.get_score,
+    num_evaluations, best_score, best = hillclimb_and_restart(init_function, move_operator, graph.get_score,
                                                               max_eval, delta_max, mu)
     log.debug(best)
     return num_evaluations, best_score, best
+
 
 def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
@@ -117,6 +118,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
                 statistics.mean(all_time),
                 statistics.mean(all_best_score), statistics.stdev(all_best_score),
                 statistics.mean(all_num_evaluations)))
+
 
 def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
