@@ -9,7 +9,7 @@ SCRIPT_DIR = os.path.dirname(os.path.realpath(os.path.join(os.getcwd(), os.path.
 sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from graphstructure import lectureFichier
-from hillclimb.hc import hillclimb
+from hillclimb.hc import hillclimb, hillclimb_and_restart
 from itertools import repeat
 from tools.enumGraphe import get_random_soluce
 from multiprocessing import Pool, cpu_count
@@ -31,11 +31,27 @@ def doWork(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
     log.debug('time : %f' % (stop - start))
     return num_evaluations, best_score, best, (stop - start)
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
+def doWorkRestart(iter, graph, move_operator, max_evaluations, delta_max, mu, nbk):
+
+    def init_function():
+        return get_random_soluce(graph.get_nbVertices(), nbk, delta_max)
+
+    log.debug('Start process number : %d' %iter)
+    start = timeit.default_timer()
+    num_evaluations, best_score, best = hillclimb_and_restart(init_function, move_operator, graph.get_score,
+                                                  max_evaluations, delta_max, mu)
+    stop = timeit.default_timer()
+    log.debug('time : %f' % (stop - start))
+    return num_evaluations, best_score, best, (stop - start)
+
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, restart):
 
 
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler(logsPath + "/mproc_hillclimbing.log")
+    if restart:
+        fh = logging.FileHandler(logsPath + "/mproc_hillclimbing_restart.log")
+    else:
+        fh = logging.FileHandler(logsPath + "/mproc_hillclimbing.log")
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -48,8 +64,10 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     nb_proc = cpu_count()
     pool = Pool(processes=nb_proc)
     startWork = timeit.default_timer()
-    #results = pool.map(doWork, range(iter))
-    results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(nbk)))
+    if restart:
+        results = pool.starmap(doWorkRestart, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(nbk)))
+    else :
+        results = pool.starmap(doWork, zip(range(iter), repeat(graph), repeat(move_operator), repeat(max_eval), repeat(delta_max), repeat(mu), repeat(nbk)))
     pool.close()
     pool.join()
     stopWork = timeit.default_timer()
@@ -57,7 +75,10 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
 
     actual_best_score = sys.maxsize
 
-    log.info("-------MULTI_PROC HILLCLIMB-------")
+    if restart:
+        log.info("-------MULTI_PROC HILLCLIMB RESTART-------")
+    else:
+        log.info("-------MULTI_PROC HILLCLIMB-------")
     for result in results:
         num_evaluations, best_score, best, time = result
         if best_score < actual_best_score:
@@ -83,6 +104,7 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
                 statistics.mean(all_num_evaluations)))
 
 
+
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         lectureFichier.usage(sys.argv[0])
@@ -97,7 +119,8 @@ if __name__ == '__main__':
     mu = .5
     move_operator = pick_gen
     logsPath = "../logs/"
+    restart = False
 
-    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator, logsPath)
+    main(graph, nbk, delta_max, mu, max_evaluations, iter, move_operator, logsPath, restart)
 
 

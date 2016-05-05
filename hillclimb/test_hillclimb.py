@@ -82,9 +82,13 @@ def test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operato
     return num_evaluations, best_score, best
 
 
-def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
+def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, restart):
     logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler(logsPath + "/hillclimbing.log")
+    if restart:
+        fh = logging.FileHandler(logsPath + "/hillclimbing_restart.log")
+    else:
+        fh = logging.FileHandler(logsPath + "/hillclimbing.log")
+
     fh.setLevel(logging.INFO)
     frmt = logging.Formatter('%(message)s')
     fh.setFormatter(frmt)
@@ -94,10 +98,16 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
     all_best_score = []
     all_time = []
 
-    log.info("-------RUNNING HILLCLIMB-------")
+    if restart:
+        log.info("-------RUNNING HILLCLIMB RESTART-------")
+    else:
+        log.info("-------RUNNING HILLCLIMB-------")
     for i in range(iter):
         start = timeit.default_timer()
-        num_evaluations, best_score, best = test_file_hillcimb(graph, nbk, delta_max, mu, max_eval, move_operator)
+        if restart:
+            num_evaluations, best_score, best = test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operator)
+        else:
+            num_evaluations, best_score, best = test_file_hillcimb(graph, nbk, delta_max, mu, max_eval, move_operator)
         stop = timeit.default_timer()
         log.debug('time : %f' % (stop - start))
         all_num_evaluations.append(num_evaluations)
@@ -118,42 +128,6 @@ def main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
                 statistics.mean(all_best_score), statistics.stdev(all_best_score),
                 statistics.mean(all_num_evaluations)))
 
-
-def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath):
-    logging.basicConfig(stream=sys.stdout, level=logging.DEBUG)
-    fh = logging.FileHandler(logsPath + "/hillclimbing.log")
-    fh.setLevel(logging.INFO)
-    frmt = logging.Formatter('%(message)s')
-    fh.setFormatter(frmt)
-    log.addHandler(fh)
-
-    all_num_evaluations = []
-    all_best_score = []
-    all_time = []
-
-    log.info("-------RUNNING HILLCLIMB RESTART VERSION-------")
-    for i in range(iter):
-        start = timeit.default_timer()
-        num_evaluations, best_score, best = test_file_hillcimb_restart(graph, nbk, delta_max, mu, max_eval, move_operator)
-        stop = timeit.default_timer()
-        log.debug('time : %f' % (stop - start))
-        all_num_evaluations.append(num_evaluations)
-        all_best_score.append(best_score)
-        all_time.append(stop - start)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r" % (graph.get_nbVertices(), nbk, delta_max, mu))
-    log.info("for %d iteration with %d max_evaluations each, "
-             "\n total time in sec : %r"
-             "\n best score found is %d,"
-             "\n mean time in sec : %r,"
-             "\n mean best_score : %r, EcT : %r"
-             "\n mean num_eval : %r"
-             % (iter,
-                max_eval,
-                sum(all_time),
-                min(score for score in all_best_score),
-                statistics.mean(all_time),
-                statistics.mean(all_best_score), statistics.stdev(all_best_score),
-                statistics.mean(all_num_evaluations)))
 
 if __name__ == '__main__':
     from tools.voisinageGraphe import pick_gen
@@ -169,5 +143,6 @@ if __name__ == '__main__':
     graph = reader.g
     move_operator = pick_gen
     logsPath = "../logs/"
+    restart = False
 
-    main(graph, nbK, delta_max, mu, max_evaluations, iter, move_operator, logsPath)
+    main(graph, nbK, delta_max, mu, max_evaluations, iter, move_operator, logsPath, restart)

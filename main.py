@@ -69,12 +69,9 @@ if __name__ == '__main__':
 
         if arguments['hc']:
             if arguments['--mproc']:
-                mproc_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
+                mproc_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPath, arguments['-r'])
             else:
-                if arguments['-r']:
-                    test_hillclimb.mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
-                else:
-                    test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
+                test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath, arguments['-r'])
 
         elif arguments['ts']:
             if arguments['--mproc']:
