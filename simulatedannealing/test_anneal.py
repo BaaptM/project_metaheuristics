@@ -72,7 +72,7 @@ def main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, 
                                         statistics.mean(all_temp)))
 
 if __name__ == '__main__':
-    from tools.voisinageGraphe import pick_gen
+    from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
 
     if (len(sys.argv) != 2):
         lectureFichier.usage(sys.argv[0])
