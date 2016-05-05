@@ -3,10 +3,10 @@ by Baptiste MASSET & Norbert Feron
 
 
 Usage:
-    main.py enum <path> --nbk=N --delta_max=N --mu=N
-    main.py hc <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [-r] [--mproc]
-    main.py ts <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [--mproc]
-    main.py sa <path> --nbk=N --delta_max=N --mu=N --temp=N --alpha=N --max_eval=N --iter=N --move=op [--mproc]
+    main.py enum <path> [--nbk=N --delta_max=N --mu=N]
+    main.py hc <path> [--nbk=N --delta_max=N --mu=N] --max_eval=N --iter=N --move=op [-r] [--mproc]
+    main.py ts <path> [--nbk=N --delta_max=N --mu=N] --max_eval=N --iter=N --move=op [--mproc]
+    main.py sa <path> [--nbk=N --delta_max=N --mu=N] --temp=N --alpha=N --max_eval=N --iter=N --move=op [--mproc]
     main.py (-h | --help)
     main.py --version
 Arguments:
@@ -21,7 +21,7 @@ Options:
     --iter=N            Set the number of repeated execution (for loop)
     -r                  Restart hillclimb until max_eval is reached
     --move=op           Set the move operator for elementary move to another solution ( pNd ; swap ; sweep )
-    --mproc              Running multi proc version of algorithms
+    --mproc             Running multi proc version of algorithms
     -h --help           Show this screen.
     --version           Show version.
 """
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     graph = reader.g
     nbk = int(arguments['--nbk'])
     delta_max = int(arguments['--delta_max'])
-    mu = int(arguments['--mu'])
+    mu = float(arguments['--mu'])
 
     logsPath = "./logs"
 
@@ -80,7 +80,7 @@ if __name__ == '__main__':
                 test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator,logsPath)
         elif arguments['sa']:
             temp = int(arguments['--temp'])
-            alpha = int(arguments['--alpha'])
+            alpha = float(arguments['--alpha'])
             if arguments['--mproc']:
                 mproc_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator,logsPath)
             else:
