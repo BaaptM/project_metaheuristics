@@ -6,6 +6,7 @@ Usage:
     main.py enum <path> --nbk=N --delta_max=N --mu=N
     main.py hc <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [-r] [--mproc]
     main.py ts <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [--mproc]
+    main.py sa <path> --nbk=N --delta_max=N --mu=N --temp=N --alpha=N --max_eval=N --iter=N --move=op [--mproc]
     main.py (-h | --help)
     main.py --version
 Arguments:
@@ -31,7 +32,8 @@ import logging
 from enumerate.test_enumerate import test_enum
 from hillclimb import test_hillclimb
 from tabusearch import test_tabusearch
-from multi_proc import mproc_hillclimb, mproc_tabu
+from simulatedannealing import test_anneal
+from multi_proc import mproc_hillclimb, mproc_tabu, mproc_anneal
 from graphstructure.lectureFichier import Reader
 from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
 
@@ -77,8 +79,10 @@ if __name__ == '__main__':
                 mproc_tabu.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
             else:
                 test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
-        # if arguments['-mproc']:
-        # else:
-        # if arguments['ts']:
-        # if arguments['-mproc']:
-        # else:
+        elif arguments['sa']:
+            temp = int(arguments['--temp'])
+            alpha = int(arguments['--alpha'])
+            if arguments['--mproc']:
+                mproc_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator)
+            else:
+                test_anneal.main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator)
