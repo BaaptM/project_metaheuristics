@@ -11,7 +11,6 @@ sys.path.append(os.path.normpath(os.path.join(SCRIPT_DIR, PACKAGE_PARENT)))
 
 from tabusearch import ts
 from graphstructure import lectureFichier
-from tools import voisinageGraphe
 from tools.enumGraphe import get_random_soluce
 
 log = logging.getLogger(__name__)
