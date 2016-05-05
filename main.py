@@ -5,6 +5,7 @@ by Baptiste MASSET & Norbert Feron
 Usage:
     main.py enum <path> --nbk=N --delta_max=N --mu=N
     main.py hc <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [-r] [--mproc]
+    main.py ts <path> --nbk=N --delta_max=N --mu=N --max_eval=N --iter=N --move=op [--mproc]
     main.py (-h | --help)
     main.py --version
 Arguments:
@@ -29,7 +30,8 @@ import os
 import logging
 from enumerate.test_enumerate import test_enum
 from hillclimb import test_hillclimb
-from multi_proc import mproc_hillclimb
+from tabusearch import test_tabusearch
+from multi_proc import mproc_hillclimb, mproc_tabu
 from graphstructure.lectureFichier import Reader
 from tools.voisinageGraphe import pick_gen, swap_gen, sweep_gen
 
@@ -69,8 +71,12 @@ if __name__ == '__main__':
                     test_hillclimb.mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
                 else:
                     test_hillclimb.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
-        # todo implements the others
-        # if arguments['sa']:
+
+        elif arguments['ts']:
+            if arguments['--mproc']:
+                mproc_tabu.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
+            else:
+                test_tabusearch.main(graph, nbk, delta_max, mu, max_eval, iter, move_operator)
         # if arguments['-mproc']:
         # else:
         # if arguments['ts']:
