@@ -156,7 +156,7 @@ def mainRestart(graph, nbk, delta_max, mu, max_eval, iter, move_operator, logsPa
                 statistics.mean(all_num_evaluations)))
 
 if __name__ == '__main__':
-    from tools.voisinageGraphe import pick_gen
+    from tools.voisinageGraphe import pick_gen, sweep_gen, swap_gen
     if (len(sys.argv) != 2):
         lectureFichier.usage(sys.argv[0])
         exit()
