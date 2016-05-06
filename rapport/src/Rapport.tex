@@ -677,9 +677,25 @@ for 100 iteration with 100 max_evaluations each,
 \subsection{Algorithme d'énumération}
 L'algorithme d'énumération fournis systématiquement la ou les solutions optimales, cependant le temps d’exécution augmente exponentiellement en fonction du nombre de classe et de sommets à traiter. C'est pour cette raison que nous nous sommes arrêté à partir de 20 sommets en 3 classes.\\\\
 5 Sommets en 2 classes : 0.0007814168930053711 secondes\\
-20 Sommets en 3 classes : 160.39260955667123 secondes
+20 Sommets en 2 classes : 160.39260955667123 secondes
 
 \subsection{Descente de Gradient}
+
+\subsubsection{Interprétations des résultats}
+Les résultats obtenus sont des moyennes de valeur trouvé par les itérations successive de l'algorithme.\\
+\begin{enumerate}
+	\item{ect}: l'écart type entre les solutions
+	\item{best\_score}: meilleur score associé à une solution obtenu
+	\item{time}: temps en secondes
+	\item{num\_eval}: le nombre d'évaluations de l'algorithme avant de remplir une condition d'arrêt, de 0 à 100.
+\end{enumerate}
+
+\subsubsection{Comparaison avec l'énumération}
+L'algorithme de descente de gradient nous permet de trouver des optimums locaux, en itérant cette algorithme avec une solution de départ aléatoire nous augmentons les chances de trouver l'optimum global, c'est pour cela que, sur les petits graphes, le meilleur score correspond au résultats de l'algorithme d'énumération.\\\\
+Énumération: 20 Sommets en 2 classes : 160 secondes\\
+Descente: 20 Sommets en 2 classes 100 itérations : 0.40 seconde\\
+
+Le score trouvé étant identique, l'algorithme de descente de gradient ce révèle plus performant, même si le résultat n'est pas forcément la solution optimale, le gain de temps n'est pas négligeable.\\
 
 \subsection{Recuit Simulé}
 
