@@ -121,7 +121,15 @@ La solution la plus simple consiste à énumérer toutes les solutions valides e
 \section{L'espace de recherche}
 Lors de l'utilisation des méta-heuristiques, l'ensemble des solutions possibles forment un espace de recherche borné. Le but de nos méta-algorithmes est donc de trouver l'optimum global, c'est à dire la meilleure solution au problème.
 	\subsection{Notion de voisinage}
+	Le voisinage d'une solution est l’ensemble des solutions voisines, c’est à dire l’ensemble des solutions accessibles par un mouvement et un seul. Afin de trouver la solution optimale nous allons donc répéter l'évaluation du voisinage d'une solution.
 	\subsection{Mouvement élémentaire}
+	Un mouvement est une opération élémentaire permettant de passer d’une solution à une
+solution voisine. Ce mouvement nous permet donc de créer le voisinage d'une solution. Trois mouvement différents ont été utilisés dans ce projet, à savoir :
+\begin{enumerate}
+\item{Pick'n'Drop : prend un élément d'une classe et le dépose dans une autre}
+\item{Swap : échange deux éléments}
+\item{Sweep : permutation circulaire des éléments}
+\end{enumerate}
 
 \section{Descente de Gradient (glouton)}
 	\subsection{Algorithme glouton}
@@ -130,14 +138,188 @@ Lors de l'utilisation des méta-heuristiques, l'ensemble des solutions possibles
 	L'hypothèse pour ce type d'algorithme est que des choix locaux optimaux successifs produisent un résultat global optimal. Il a pour avantage d'avoir une faible complexité et d'être rapide.
 
 	\subsection{Fonctionnement}
-	
+	La descente de gradient (ou hillclimbing) est la méthode d'optimisation stochastique la plus simple et fonctionne de cette manière :
+	\begin{enumerate}
+		\item{Choisir un point de départ (aléatoirement ou non)}
+		\item{À chaque étape, prendre la première solution voisine améliorante}
+		\item{S'il n'y a plus de solution améliorante; stop; sinon revenir à l'étape 2}
+	\end{enumerate}
 
+	On peut assimiler cette algorithme à un alpiniste cherchant à grimper (ou descendre) une montagne une étape après l'autre. C'est un algorithme glouton car il ne prend que des solutions améliorante, qui font monter (ou descendre) notre alpiniste. Nous arrivons donc rapidement en haut (ou en bas) de la colline, cependant rien ne nous assure que cette colline soit la plus haute (ou la plus basse).
+
+
+	\noindent%
+	\begin{minipage}{\linewidth}% to keep image and caption on one page
+	\makebox[\linewidth]{%        to center the image
+	  \includegraphics[keepaspectratio=true,scale=0.7]{img/hc.png}}
+	\captionof{figure}{Représentation d'un espace de recherche}\label{hc}%      only if needed  
+	\end{minipage}\\
+
+	Comme vous pouvez le voir sur cette figure, notre solution courante (le point rouge) ne peux plus qu'aller en descendant, pourtant ce n'est pas le plus au point du paysage.
+
+	Le plus haut point correspond à l'optimum global et le point rouge correspond à l'optimum local.
+
+	C'est donc la limite, cette algorithme tend à rester coincé dans son optimum local. Une variante de cette algorithme consiste à le faire redémarrer tant que le nombre d'évaluation maximum définit par l'utilisateur n'est pas atteint en choisissant un nouveau point de départ.\\\\
+
+	Dans la suite nous verrons des méta-algorithme qui eux ont la particularité de ne pas rester coincés dans un optimum local, et donc trouvent toujours l'optimum global, ou du moins s'en approche.
 \section{Recuit Simulé}
+Tout droit sortie de la thermodynamique et plus précisément d'un phénomène en métallurgie, le recuit simulé ressemble à une descente de gradient mais avec la capacité de sortir des optimum locaux.
+
+Cette capacité est due à l'introduction de deux nouvelles variable, un température et un coefficient de refroidissement.
+
+	\subsection{Fonctionnement}
+	\begin{enumerate}
+		\item{Choisir un point de départ (aléatoirement ou non)}
+		\item{Définir une température initiale et un coefficient de refroidissement}
+		\item{Choisir le premier voisin de la solution courante}
+		\begin{itemize}
+			\item{Si ce voisin est améliorant, on le choisit comme solution courante}
+			\item{Si ce voisin est moins bon, choisir de manière probabiliste d'en faire la solution courante en se basant sur la température courante et son niveau de ``moins bon''}
+		\end{itemize}
+		\item{Baisser la température}
+		\item{Revenir à l'étape 3}
+	\end{enumerate}
+
+En baissant doucement la température, nous avons moins de chance de choisir une solution non améliorante au cours du temps. Quand la température est vraiment basse, on revient à la descente de gradient.
+Le choix probabiliste de prendre une solution ou non se fait grâce à l’algorithme de Métropolis.
+
+L'inconvénient de cette algorithme réside dans le choix des paramètre de température et de refroidissement, souvent définie de manière empirique. 
+
 
 \section{Recherche Tabou}
+La recherche tabou est une amélioration de la descente de gradient. En effet, le fonctionnement est le même en tout point à l'exception près de l'introduction d'une file de taille définie, nous permettant de stocker la solution précédente à la solution courante. Ainsi nous évitons de repasser par un voisin déjà visité. Ce mécanisme permet donc à la descente de gradient de sortir d'un optimum local.
 
+	\subsection{Fonctionnement}
+	\begin{enumerate}
+		\item{Choisir un point de départ (aléatoirement ou non)}
+		\item{À chaque étape, prendre la première solution voisine améliorante}
+		\item{Si elle n'est pas dans la pile; en faire la solution courante et stocker son prédécesseur dans la pile; sinon choisir une autre solution voisine améliorante}
+		\item{S'il n'y a plus de solution améliorante; stop; sinon revenir à l'étape 2}
+	\end{enumerate}
+
+Plusieurs stratégies sont possibles, stocker son prédécesseur, stocker le mouvement nous ayant permis d'arriver à la solution...
+Ici la pile est une mémoire à court terme (ne pas excéder une taille de 15), mais nous pourrions mettre en place différent type de mémoire. \\
+
+Aussi le critère d'arrêt, comme pour les méta-algorithmes précédents, peuvent différer. Soit on s'arrête lorsque le nombre maximum d'itération est atteint, lorsque aucune solution améliorante n'a été trouvée depuis un certain temps, lorsque la variation des solutions est trop faible, lorsque la température dans le cas du recuit simulé est trop basse...
+
+\section{Comparaison des trois mouvements élémentaires}
+Nous allons maintenant comparer les trois mouvements élémentaires nous permettant de construire le voisinage : Pick'n'Drop, Swap, Sweep.
+Les tests ont été effectués sur un graphe à 30 sommets en 2 classes avec un maximum de 3 éléments d'écart entre les classes.
+	\subsection{Descente de Gradient}
+		\begin{verbatim}
+INFO:multi_proc.mproc_hillclimb:-------MULTI_PROC HILLCLIMB-------
+INFO:multi_proc.mproc_hillclimb:Running on 8 proc
+INFO:multi_proc.mproc_hillclimb:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0;
+move_operator=pick_gen
+INFO:multi_proc.mproc_hillclimb:for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 5.6474458440206945
+ best score found is 188,
+ mean time in sec : 0.41084918993961766,
+ mean best_score : 193.66666666666669, EcT : 2.9370499870214375
+ mean num_eval : 51.84
+
+ INFO:multi_proc.mproc_hillclimb:-------MULTI_PROC HILLCLIMB-------
+INFO:multi_proc.mproc_hillclimb:Running on 8 proc
+INFO:multi_proc.mproc_hillclimb:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0;
+move_operator=swap_gen
+INFO:multi_proc.mproc_hillclimb:for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 13.165540570014855
+ best score found is 190,
+ mean time in sec : 0.9277846304691048,
+ mean best_score : 194.82533333333333, EcT : 2.039140682990769
+ mean num_eval : 100.0
+
+ INFO:multi_proc.mproc_hillclimb:-------MULTI_PROC HILLCLIMB-------
+INFO:multi_proc.mproc_hillclimb:Running on 8 proc
+INFO:multi_proc.mproc_hillclimb:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0;
+move_operator=sweep_gen
+INFO:multi_proc.mproc_hillclimb:for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 13.09051345998887
+ best score found is 189,
+ mean time in sec : 0.9137671065484756,
+ mean best_score : 194.7413333333333, EcT : 2.4469827042007655
+ mean num_eval : 100.0
+		\end{verbatim}
+	\subsection{Recuit Simulé}
+		\begin{verbatim}
+INFO:multi_proc.mproc_anneal:-------MULTI_PROC SIMULATED ANNEALING-------
+INFO:multi_proc.mproc_anneal:Running on 8 proc
+INFO:multi_proc.mproc_anneal:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0; 
+final_temp = 1.4159869113351014; alpha = 0.95; move_operator= pick_gen
+INFO:multi_proc.mproc_anneal:for 100 iteration with 100 max_evaluations each, 
+ best score found is 193,
+ total time in sec : 14.668629520980176
+ mean time in sec : 1.023166321387398,
+ mean best_score : 197.67666666666668, EcT : 2.0977541301526235
+ mean num_eval : 100.0,
+ mean end temperature : 1.2664165177126414
+
+ INFO:multi_proc.mproc_anneal:-------MULTI_PROC SIMULATED ANNEALING-------
+INFO:multi_proc.mproc_anneal:Running on 8 proc
+INFO:multi_proc.mproc_anneal:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0; 
+final_temp = 1.4159869113351014; alpha = 0.95; move_operator= swap_gen
+INFO:multi_proc.mproc_anneal:for 100 iteration with 100 max_evaluations each, 
+ best score found is 193,
+ total time in sec : 37.858596491016215
+ mean time in sec : 2.5797699854095115,
+ mean best_score : 198.18266666666668, EcT : 2.5924282391387767
+ mean num_eval : 100.0,
+ mean end temperature : 1.4003589296125034
+
+ INFO:multi_proc.mproc_anneal:-------MULTI_PROC SIMULATED ANNEALING-------
+ INFO:multi_proc.mproc_anneal:Running on 8 proc
+INFO:multi_proc.mproc_anneal:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0; 
+final_temp = 1.2779281874799289; alpha = 0.95; move_operator= sweep_gen
+INFO:multi_proc.mproc_anneal:for 100 iteration with 100 max_evaluations each, 
+ best score found is 194,
+ total time in sec : 39.423500056989724
+ mean time in sec : 2.7440948232493247,
+ mean best_score : 198.33, EcT : 2.223784804161333
+ mean num_eval : 100.0,
+ mean end temperature : 1.3372233881087228
+		\end{verbatim}
+	\subsection{Recherche Tabou}
+		\begin{verbatim}
+INFO:multi_proc.mproc_tabu:-------MULTI_PROC TABUSEARCH-------
+INFO:multi_proc.mproc_tabu:Running on 8 proc
+INFO:multi_proc.mproc_tabu:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0;
+move_operator=pick_gen; tabu_maxsize = 15
+INFO:multi_proc.mproc_tabu:for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 5.805855156009784
+ best score found is 189,
+ mean time in sec : 0.42773062509309967,
+ mean best_score : 193.40666666666667, EcT : 2.6216657516036084
+ mean num_eval : 9.96
+
+ INFO:multi_proc.mproc_tabu:-------MULTI_PROC TABUSEARCH-------
+INFO:multi_proc.mproc_tabu:Running on 8 proc
+INFO:multi_proc.mproc_tabu:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0;
+move_operator=swap_gen; tabu_maxsize = 15
+INFO:multi_proc.mproc_tabu:for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 68.0415397619945
+ best score found is 188,
+ mean time in sec : 4.820201046710135,
+ mean best_score : 190.21466666666666, EcT : 1.4176245127886513
+ mean num_eval : 9.93
+
+ INFO:multi_proc.mproc_tabu:-------MULTI_PROC TABUSEARCH-------
+INFO:multi_proc.mproc_tabu:Running on 8 proc
+INFO:multi_proc.mproc_tabu:nbS = 30; nbK = 2; delta_max = 3; mu = 1.0;
+move_operator=sweep_gen; tabu_maxsize = 15
+INFO:multi_proc.mproc_tabu:for 100 iteration with 100 max_evaluations each, 
+ total time in sec : 61.12722033701721
+ best score found is 188,
+ mean time in sec : 4.582537554161681,
+ mean best_score : 190.05533333333332, EcT : 1.4300621979519719
+ mean num_eval : 9.66
+		\end{verbatim}
+\\
+
+En ne faisant varier que le type de mouvement élémentaire, on remarque que la différence la plus notable est le temps. En effet, on remarque que quelque soit la méta-heuristique utilisée, le mouvement Pick'n'Drop est nettement plus efficace. 
+
+De 5 secondes à 60 secondes dans le cas de la recherche tabou.
 \section{Test \& Résultats}
-Nous avons testé nos algorithmes sur des graphes allant de 4 sommets à 100 sommets, les méta-algorithmes de descente de gradient, recuit simulé et recherche tabou sont lancés de manière indépendante en parallèle, après un nombre d'itérations (fixé à 100 pour nos tests), on calcul les statistiques associées à chaque algorithme.
+Nous avons testé nos algorithmes sur des graphes allant de 4 sommets à 100 sommets, les méta-algorithmes de descente de gradient, recuit simulé et recherche tabou sont lancés de manière indépendante et en parallèle sur le nombre de cœurs disponible sur la machine. Après un nombre d'itérations (fixé à 100 pour nos tests), on calcul les statistiques associées à chaque algorithme.
 
 L'énumération ne nécessite pas d'itérations car elle fournie toujours les mêmes résultats, à savoir la ou les meilleurs solutions.
 
@@ -348,7 +530,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 5; nbK = 2; delta_max = 3; mu = 1.0;
-final_temp = 0.89242491504672; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 0.89242491504672; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 3,
  total time in sec : 0.15890276758000255
@@ -359,7 +541,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 5; nbK = 2; delta_max = 3; mu = 0.5;
-final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 3,
  total time in sec : 0.14763296116143465
@@ -370,7 +552,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 5; nbK = 2; delta_max = 3; mu = 0.0;
-final_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 3,
  total time in sec : 0.135501594748348
@@ -384,7 +566,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 15; nbK = 3; delta_max = 3; mu = 1.0;
-final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 1.479973640292883
@@ -395,7 +577,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 15; nbK = 3; delta_max = 3; mu = 0.5;
-final_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 1.5027663107030094
@@ -406,7 +588,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 15; nbK = 3; delta_max = 3; mu = 0.0;
-final_temp = 1.4159869113351014; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.4159869113351014; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 1.4449690897017717
@@ -420,7 +602,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 20; nbK = 3; delta_max = 3; mu = 1.0;
-final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 2.100551615934819
@@ -431,7 +613,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 20; nbK = 3; delta_max = 3; mu = 0.5;
-final_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 56,
  total time in sec : 2.204790683928877
@@ -442,7 +624,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 20; nbK = 3; delta_max = 3; mu = 0.0;
-final_temp = 1.6515374385013575; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.6515374385013575; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 56,
  total time in sec : 2.155007839668542
@@ -456,7 +638,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 50; nbK = 3; delta_max = 3; mu = 1.0;
-final_temp = 2.2467088258818433; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 2.2467088258818433; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 304,
  total time in sec : 19.639723698608577
@@ -467,7 +649,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 50; nbK = 3; delta_max = 3; mu = 0.5;
-final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 312,
  total time in sec : 19.559158163145185
@@ -478,7 +660,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 50; nbK = 3; delta_max = 3; mu = 0.0;
-final_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 314,
  total time in sec : 19.80668053869158
@@ -492,7 +674,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 100; nbK = 4; delta_max = 3; mu = 1.0;
-final_temp = 1.926271979590445; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.926271979590445; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 1463,
  total time in sec : 306.5104563161731
@@ -503,7 +685,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 100; nbK = 4; delta_max = 3; mu = 0.5;
-final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 1463,
  total time in sec : 306.9560006177053
@@ -514,7 +696,7 @@ for 100 iteration with 100 max_evaluations each,
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
 nbS = 100; nbK = 4; delta_max = 3; mu = 0.0;
-final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+; start_temp = 100; final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 1462,
  total time in sec : 305.0477506122552
@@ -679,16 +861,16 @@ for 100 iteration with 100 max_evaluations each,
 \section{Comparaison des résultats}
 
 \subsection{Algorithme d'énumération}
-L'algorithme d'énumération fournis systématiquement la ou les solutions optimales, cependant le temps d’exécution augmente exponentiellement en fonction du nombre de classe et de sommets à traiter. C'est pour cette raison que nous nous sommes arrêté à partir de 20 sommets en 3 classes.\\\\
+L'algorithme d'énumération fournis systématiquement la ou les solutions optimales, cependant le temps d’exécution augmente exponentiellement en fonction du nombre de classe et des sommets à traiter. C'est pour cette raison que nous nous sommes arrêtés à
+ 20 sommets en 3 classes.\\\\
 5 Sommets en 2 classes : 0.0007814168930053711 secondes\\
-20 Sommets en 3 classes : 160.39260955667123 secondes
->>>>>>> e08ada4ab7377bac5e129fa4fbee8c8f99a56c09
+20 Sommets en 2 classes : 160.39260955667123 secondes
 
 	\subsection{Descente de Gradient}
 
 	\subsection{Recuit Simulé}
 
-	\subsection{Méthode Tabou}
+	\subsection{Recherche Tabou}
 
 \section{Limites}
 
