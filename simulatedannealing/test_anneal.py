@@ -56,7 +56,7 @@ def main(graph, nbk, delta_max, mu, temp, alpha, max_eval, iter, move_operator, 
         all_num_evaluations.append(num_evaluations)
         all_best_score.append(best_score)
         all_time.append(stop - start)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; start_temp = %r; alpha = %r; move_operator= %s" % (graph.get_nbVertices(), nbk,
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; final_temp = %r; alpha = %r; move_operator= %s" % (graph.get_nbVertices(), nbk,
                                                                                            delta_max, mu, temp, alpha, move_operator.__name__))
     log.info("\n for %d iteration with %d max_evaluations each,"
              "\n best score found is %d,"
