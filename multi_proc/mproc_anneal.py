@@ -71,8 +71,8 @@ def main(graph, nbk, delta_max, mu,  temp, alpha, max_eval, iter, move_operator,
         all_time.append(time)
 
     log.info("Running on %d proc" % nb_proc)
-    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; final_temp = %r; alpha = %r; move_operator= %s" % (graph.get_nbVertices(), nbk,
-                                                                                           delta_max, mu, temp, alpha,  move_operator.__name__))
+    log.info("nbS = %d; nbK = %d; delta_max = %d; mu = %r; alpha = %r; move_operator= %s" % (graph.get_nbVertices(), nbk,
+                                                                                           delta_max, mu, alpha,  move_operator.__name__))
     log.info("for %d iteration with %d max_evaluations each, "
              "\n best score found is %d,"
              "\n total time in sec : %r"
