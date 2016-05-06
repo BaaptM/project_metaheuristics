@@ -133,6 +133,12 @@ La solution la plus simple consiste à énumérer toutes les solutions valides e
 
 \section{Test \& Résultats}
 
+Nous avons testé nos algorithmes sur des graphes allant de 4 sommets à 100 sommets, les méta-algorithmes de descente de gradient, recuit simulé et méthode tabou sont lancé de façon indépendante en parallèle, après un nombre d'itérations (fixé à 100 pour nos tests), on calcul les statistiques associées à chaque algorithme.
+
+L'énumération ne nécessite pas d'itérations car elles fournis toujours les même résultats, la ou les meilleurs solutions.
+
+Voici nos résultats:
+
 \subsection{Algorithme d'énumération}
 \subsubsection{4 Sommets en 2 classes, mu = [1; 0.5; 0]}
 \begin{verbatim}
@@ -301,7 +307,7 @@ for 100 iteration with 100 max_evaluations each,
  mean best_score : 310.4, EcT : 6.935489175322106
  mean num_eval : 100
 \end{verbatim}
-\subsubsection{100 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\subsubsection{100 Sommets en 4 classes, mu = [1; 0.5; 0]}
 \begin{verbatim}
 -------MULTI_PROC HILLCLIMB-------
 Running on 16 proc
@@ -337,7 +343,8 @@ for 100 iteration with 100 max_evaluations each,
 \begin{verbatim}
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 5; nbK = 2; delta_max = 3; mu = 1.0; start_temp = 0.89242491504672; alpha = 0.95; move_operator= pick_gen
+nbS = 5; nbK = 2; delta_max = 3; mu = 1.0;
+final_temp = 0.89242491504672; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 3,
  total time in sec : 0.15890276758000255
@@ -347,7 +354,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.0925721940968705
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 5; nbK = 2; delta_max = 3; mu = 0.5; start_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.5;
+final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 3,
  total time in sec : 0.14763296116143465
@@ -357,7 +365,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.1712864838845436
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 5; nbK = 2; delta_max = 3; mu = 0.0; start_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
+nbS = 5; nbK = 2; delta_max = 3; mu = 0.0;
+final_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 3,
  total time in sec : 0.135501594748348
@@ -370,7 +379,8 @@ for 100 iteration with 100 max_evaluations each,
 \begin{verbatim}
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 15; nbK = 3; delta_max = 3; mu = 1.0; start_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+nbS = 15; nbK = 3; delta_max = 3; mu = 1.0;
+final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 1.479973640292883
@@ -380,7 +390,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.3772049646765163
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 15; nbK = 3; delta_max = 3; mu = 0.5; start_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.5;
+final_temp = 1.3451875657683463; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 1.5027663107030094
@@ -390,7 +401,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.4315769926409938
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 15; nbK = 3; delta_max = 3; mu = 0.0; start_temp = 1.4159869113351014; alpha = 0.95; move_operator= pick_gen
+nbS = 15; nbK = 3; delta_max = 3; mu = 0.0;
+final_temp = 1.4159869113351014; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 1.4449690897017717
@@ -403,7 +415,8 @@ for 100 iteration with 100 max_evaluations each,
 \begin{verbatim}
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 20; nbK = 3; delta_max = 3; mu = 1.0; start_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
+nbS = 20; nbK = 3; delta_max = 3; mu = 1.0;
+final_temp = 1.2779281874799289; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 58,
  total time in sec : 2.100551615934819
@@ -413,7 +426,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.313465545276881
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 20; nbK = 3; delta_max = 3; mu = 0.5; start_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.5;
+final_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 56,
  total time in sec : 2.204790683928877
@@ -423,7 +437,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.3380972607900203
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 20; nbK = 3; delta_max = 3; mu = 0.0; start_temp = 1.6515374385013575; alpha = 0.95; move_operator= pick_gen
+nbS = 20; nbK = 3; delta_max = 3; mu = 0.0;
+final_temp = 1.6515374385013575; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 56,
  total time in sec : 2.155007839668542
@@ -436,7 +451,8 @@ for 100 iteration with 100 max_evaluations each,
 \begin{verbatim}
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 50; nbK = 3; delta_max = 3; mu = 1.0; start_temp = 2.2467088258818433; alpha = 0.95; move_operator= pick_gen
+nbS = 50; nbK = 3; delta_max = 3; mu = 1.0;
+final_temp = 2.2467088258818433; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 304,
  total time in sec : 19.639723698608577
@@ -446,7 +462,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.5985980839004053
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 50; nbK = 3; delta_max = 3; mu = 0.5; start_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.5;
+final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 312,
  total time in sec : 19.559158163145185
@@ -456,7 +473,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.562941702556063
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 50; nbK = 3; delta_max = 3; mu = 0.0; start_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
+nbS = 50; nbK = 3; delta_max = 3; mu = 0.0;
+final_temp = 1.5689605665762896; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 314,
  total time in sec : 19.80668053869158
@@ -465,11 +483,12 @@ for 100 iteration with 100 max_evaluations each,
  mean num_eval : 100,
  mean end temperature : 1.598711134190034
 \end{verbatim}
-\subsubsection{100 Sommets en 3 classes, mu = [1; 0.5; 0]}
+\subsubsection{100 Sommets en 4 classes, mu = [1; 0.5; 0]}
 \begin{verbatim}
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 100; nbK = 4; delta_max = 3; mu = 1.0; start_temp = 1.926271979590445; alpha = 0.95; move_operator= pick_gen
+nbS = 100; nbK = 4; delta_max = 3; mu = 1.0;
+final_temp = 1.926271979590445; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 1463,
  total time in sec : 306.5104563161731
@@ -479,7 +498,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.8711562858658632
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 100; nbK = 4; delta_max = 3; mu = 0.5; start_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+nbS = 100; nbK = 4; delta_max = 3; mu = 0.5;
+final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 1463,
  total time in sec : 306.9560006177053
@@ -489,7 +509,8 @@ for 100 iteration with 100 max_evaluations each,
  mean end temperature : 1.8438790330748873
 -------MULTI_PROC SIMULATED ANNEALING-------
 Running on 16 proc
-nbS = 100; nbK = 4; delta_max = 3; mu = 0.0; start_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
+nbS = 100; nbK = 4; delta_max = 3; mu = 0.0;
+final_temp = 1.8299583806109228; alpha = 0.95; move_operator= pick_gen
 for 100 iteration with 100 max_evaluations each, 
  best score found is 1462,
  total time in sec : 305.0477506122552
@@ -622,12 +643,41 @@ for 100 iteration with 100 max_evaluations each,
 \end{verbatim}
 \subsubsection{100 Sommets en 3 classes, mu = [1; 0.5; 0]}
 \begin{verbatim}
-
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 100; nbK = 3; delta_max = 3; mu = 1.0; move_operator= pick_gen; tabu_maxsize = 15
+for 100 iteration with 100 max_evaluations each,
+ total time in sec : 4507.274052148219
+ best score found is 1146,
+ mean time in sec : 661.1381062711449,
+ mean best_score : 1169.6046999999999, EcT : 12.228225459521465
+ mean num_eval : 94.99
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 100; nbK = 3; delta_max = 3; mu = 0.5; move_operator= pick_gen; tabu_maxsize = 15
+for 100 iteration with 100 max_evaluations each,
+ total time in sec : 4468.009353993926
+ best score found is 1146,
+ mean time in sec : 652.4391142716352,
+ mean best_score : 1167.4124000000002, EcT : 11.288820483965184
+ mean num_eval : 95.13
+-------MULTI_PROC TABUSEARCH-------
+Running on 16 proc
+nbS = 100; nbK = 3; delta_max = 3; mu = 0.0; move_operator= pick_gen; tabu_maxsize = 15
+for 100 iteration with 100 max_evaluations each,
+ total time in sec : 4115.974301184062
+ best score found is 1142,
+ mean time in sec : 597.1457226081518,
+ mean best_score : 1168.06, EcT : 10.223581376485257
+ mean num_eval : 79.76
 \end{verbatim}
 
 \section{Comparaison des résultats}
 
 \subsection{Algorithme d'énumération}
+L'algorithme d'énumération fournis systématiquement la ou les solutions optimales, cependant le temps d’exécution augmente exponentiellement en fonction du nombre de classe et de sommets à traiter. C'est pour cette raison que nous nous sommes arrêté à partir de 20 sommets en 3 classes.\\\\
+5 Sommets en 2 classes : 0.0007814168930053711 secondes\\
+20 Sommets en 3 classes : 160.39260955667123 secondes
 
 \subsection{Descente de Gradient}
 
