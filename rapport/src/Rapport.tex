@@ -79,63 +79,67 @@ Marc Michel \textsc{Corsini}
 \section{Introduction}
 Dans le cadre de l'UE Graphes et Recherche Opérationnel du Master 1 Informatique de l'Université de Bordeaux, nous avons mis en œuvre ce projet qui a pour but de mettre en pratique des heuristiques et méta-heuristiques, tels que la descente de gradient, le recuit simulé ou encore la méthode tabou, sur un problème de partitionnement de graphe. Pour cela nous disposons de graphes pondérés, de différentes tailles (de cinq sommets à plus de milles), sur lesquelles nous allons tester et comparer les résultats de nos différents algorithmes appliqués au problème de partitionnement de graphe en K classes ``à peu près équitables''.
 
-\subsection{Définition d'une méta-heuristique}
-\begin{textit}
-Une méta-heuristique est un algorithme d’optimisation visant à résoudre des problèmes d’optimisation difficile (souvent issus des domaines de la recherche opérationnelle, de l'ingénierie ou de l'intelligence artificielle) pour lesquels on ne connaît pas de méthode classique plus efficace.
-\end{textit}
+	\subsection{Définition d'une méta-heuristique}
+	\begin{textit}
+	Une méta-heuristique est un algorithme d’optimisation visant à résoudre des problèmes d’optimisation difficile (souvent issus des domaines de la recherche opérationnelle, de l'ingénierie ou de l'intelligence artificielle) pour lesquels on ne connaît pas de méthode classique plus efficace.
+	\end{textit}
 
-Les méta-heuristiques sont généralement des algorithmes stochastiques itératifs, qui progressent vers un optimum global, c'est-à-dire l'extremum global d'une fonction, par échantillonnage d’une fonction objectif. Elles se comportent comme des algorithmes de recherche, tentant d’apprendre les caractéristiques d’un problème afin d’en trouver une approximation de la meilleure solution.
+	Les méta-heuristiques sont généralement des algorithmes stochastiques itératifs, qui progressent vers un optimum global, c'est-à-dire l'extremum global d'une fonction, par échantillonnage d’une fonction objectif. Elles se comportent comme des algorithmes de recherche, tentant d’apprendre les caractéristiques d’un problème afin d’en trouver une approximation de la meilleure solution.
 
-\subsection{Problématique}
-Notre problème est le suivant : partitionner un graphe en K classes ``à peu près équitable'' tout en minimisant le poids des arêtes interclasses. En d'autres termes, cela consiste à placer chaque sommet du graphe dans une des classe de manières à minimiser la somme des poids des arrêtes n'appartenant pas à la même classe.
-\begin{center}
-min($\sum\limits_{i} \sum\limits_{j}  \omega (i,j)$)
-\end{center}
-avec $i \in K1, j \in K2, i \ne j$ et $\omega (i,j)$ le poids entre $i$ et $j$.
+	\subsection{Problématique}
+	Notre problème est le suivant : partitionner un graphe en K classes ``à peu près équitable'' tout en minimisant le poids des arêtes interclasses. En d'autres termes, cela consiste à placer chaque sommet du graphe dans une des classe de manières à minimiser la somme des poids des arrêtes n'appartenant pas à la même classe.
+	\begin{center}
+	min($\sum\limits_{i} \sum\limits_{j}  \omega (i,j)$)
+	\end{center}
+	avec $i \in K1, j \in K2, i \ne j$ et $\omega (i,j)$ le poids entre $i$ et $j$.
 
-\subsection{Nombre de classes}
-En ce qui concerne le nombre de classes en lequel vont être partitionnés nos graphes, nous avons choisi de laisser ce paramètre externe au problème. Autrement dit, c'est à l'utilisateur de définir ce paramètre à l’exécution suivant le nombre de sommets du graphe et ses attentes.
-Aussi le nombre de solutions potentielles vaut $k^n$ avec $k$ le nombre de classes et $n$ le nombre de sommets du graphe. 
+	\subsection{Nombre de classes}
+	En ce qui concerne le nombre de classes en lequel vont être partitionnés nos graphes, nous avons choisi de laisser ce paramètre externe au problème. Autrement dit, c'est à l'utilisateur de définir ce paramètre à l’exécution suivant le nombre de sommets du graphe et ses attentes.
+	Aussi le nombre de solutions potentielles vaut $k^n$ avec $k$ le nombre de classes et $n$ le nombre de sommets du graphe. 
 
-Attention donc à ne pas choisir un $k$ trop grand pour un graphe comportant beaucoup de sommets au risque de ne pas avoir de retour du programme en un temps raisonnable. 
+	Attention donc à ne pas choisir un $k$ trop grand pour un graphe comportant beaucoup de sommets au risque de ne pas avoir de retour du programme en un temps raisonnable. 
 
-\subsection{Définition de l'équité}
+	\subsection{Définition de l'équité}
 
-Pour ce qui est de la notion d' ``à peu près équitables'' entre les classes, nous avons choisi de laisser ce paramètre à l'appréciation de l'utilisateur par soucis de généricité. Celui-ci dispose d'une variable supplémentaire appelée ``delta\_max''. Cette variable correspond à l'écart maximum d'éléments autorisé entre les classes pour qu'une solution soit considérée comme acceptable et puisse être retournée en sortie des différents algorithmes utilisés dans ce projet.
+	Pour ce qui est de la notion d' ``à peu près équitables'' entre les classes, nous avons choisi de laisser ce paramètre à l'appréciation de l'utilisateur par soucis de généricité. Celui-ci dispose d'une variable supplémentaire appelée ``delta\_max''. Cette variable correspond à l'écart maximum d'éléments autorisé entre les classes pour qu'une solution soit considérée comme acceptable et puisse être retournée en sortie des différents algorithmes utilisés dans ce projet.
 
-De plus, le score des solutions est pénalisé par la différence du nombre de sommets dans les classes par une constante appelé $\mu$ ``mu'' $\in [0,1]$. Ainsi, plus la disparité entre les classes sera grande plus la pénalité sera élevée.
+	De plus, le score des solutions est pénalisé par la différence du nombre de sommets dans les classes par une constante appelé $\mu$ ``mu'' $\in [0,1]$. Ainsi, plus la disparité entre les classes sera grande plus la pénalité sera élevée.
 
-\subsection{Fonction objectif}
-Cette fonction permet de décrire la qualité d'une solution.
+	\subsection{Fonction objectif}
+	Cette fonction permet de décrire la qualité d'une solution.
 
 
-L'objectif du projet est de minimiser la somme du poids des arrêtes interclasses, nous retenons donc les solutions dont le score est le plus faible. Le calcul du score est : 
-\begin{center}
-$\sum\limits_{i} \sum\limits_{j}  \omega (i,j)) + \mu * c(\delta)$
-\end{center}
-avec $i \in K1, j \in K2, i \ne j$, $\omega (i,j)$ le poids entre $i$ et $j$, $\mu$ une constante $\in [0,1]$, $\delta$ l'écart en terme d'éléments entre K1 et K2 et $c(\delta)$ le rapport entre $\delta$ et le nombre total de sommets.
-
-\section{L'espace de recherche}
-Lors de l'utilisation des méta-heuristiques, l'ensemble des solutions possibles forment un espace de recherche borné. Le but de nos méta-algorithme est donc de trouver l'optimum, la meilleure solution au problème.
-	\subsection{Notion de voisinage}
-	\subsection{Mouvement élémentaire}
+	L'objectif du projet est de minimiser la somme du poids des arrêtes interclasses, nous retenons donc les solutions dont le score est le plus faible. Le calcul du score est : 
+	\begin{center}
+	$\sum\limits_{i} \sum\limits_{j}  \omega (i,j)) + \mu * c(\delta)$
+	\end{center}
+	avec $i \in K1, j \in K2, i \ne j$, $\omega (i,j)$ le poids entre $i$ et $j$, $\mu$ une constante $\in [0,1]$, $\delta$ l'écart en terme d'éléments entre K1 et K2 et $c(\delta)$ le rapport entre $\delta$ et le nombre total de sommets.
 
 \section{Méthode d’énumération}
 La solution la plus simple consiste à énumérer toutes les solutions valides et de calculer la somme du poids des arrêtes interclasses, les solutions avec le meilleur score sont retournées en résultats de l'algorithme d'énumération. Les solutions retournées sont donc toujours les solutions optimales, cependant la puissance de nos calculateurs fait défaut et en dépassant un certain nombre de sommets, nos ordinateurs ne disposent pas d'un puissance de calcul suffisante et l'énumération des solutions devient impossible à effectuer en un temps raisonnable.
 
+\section{L'espace de recherche}
+Lors de l'utilisation des méta-heuristiques, l'ensemble des solutions possibles forment un espace de recherche borné. Le but de nos méta-algorithmes est donc de trouver l'optimum global, c'est à dire la meilleure solution au problème.
+	\subsection{Notion de voisinage}
+	\subsection{Mouvement élémentaire}
 
+\section{Descente de Gradient (glouton)}
+	\subsection{Algorithme glouton}
+	Un algorithme glouton est un algorithme qui construit sa solution pas à pas, sans revenir sur ses décisions et en effectuant à chaque étape le choix qui semble le meilleur.
 
-\section{Descente de Gradient}
+	L'hypothèse pour ce type d'algorithme est que des choix locaux optimaux successifs produisent un résultat global optimal. Il a pour avantage d'avoir une faible complexité et d'être rapide.
+
+	\subsection{Fonctionnement}
+	
 
 \section{Recuit Simulé}
 
-\section{Méthode Tabou}
+\section{Recherche Tabou}
 
 \section{Test \& Résultats}
+Nous avons testé nos algorithmes sur des graphes allant de 4 sommets à 100 sommets, les méta-algorithmes de descente de gradient, recuit simulé et recherche tabou sont lancés de manière indépendante en parallèle, après un nombre d'itérations (fixé à 100 pour nos tests), on calcul les statistiques associées à chaque algorithme.
 
-Nous avons testé nos algorithmes sur des graphes allant de 4 sommets à 100 sommets, les méta-algorithmes de descente de gradient, recuit simulé et méthode tabou sont lancé de façon indépendante en parallèle, après un nombre d'itérations (fixé à 100 pour nos tests), on calcul les statistiques associées à chaque algorithme.
-
-L'énumération ne nécessite pas d'itérations car elles fournis toujours les même résultats, la ou les meilleurs solutions.
+L'énumération ne nécessite pas d'itérations car elle fournie toujours les mêmes résultats, à savoir la ou les meilleurs solutions.
 
 Voici nos résultats:
 
@@ -674,32 +678,31 @@ for 100 iteration with 100 max_evaluations each,
 
 \section{Comparaison des résultats}
 
-\subsection{Algorithme d'énumération}
-L'algorithme d'énumération fournis systématiquement la ou les solutions optimales, cependant le temps d’exécution augmente exponentiellement en fonction du nombre de classe et de sommets à traiter. C'est pour cette raison que nous nous sommes arrêté à partir de 20 sommets en 3 classes.\\\\
-5 Sommets en 2 classes : 0.0007814168930053711 secondes\\
-20 Sommets en 2 classes : 160.39260955667123 secondes
+	\subsection{Algorithme d'énumération}
+	L'algorithme d'énumération fournis systématiquement la ou les solutions optimales, cependant le temps d’exécution augmente exponentiellement en fonction du nombre de classe et de sommets à traiter. C'est pour cette raison que nous nous sommes arrêté à partir de 20 sommets en 3 classes.\\\\
+	5 Sommets en 2 classes : 0.0007814168930053711 secondes\\
+	20 Sommets en 2 classes : 160.39260955667123 secondes
 
-\subsection{Descente de Gradient}
+	\subsection{Descente de Gradient}
+		\subsubsection{Interprétations des résultats}
+		Les résultats obtenus sont des moyennes de valeur trouvé par les itérations successive de l'algorithme.\\
+		\begin{enumerate}
+			\item{ect}: l'écart type entre les solutions
+			\item{best\_score}: meilleur score associé à une solution obtenu
+			\item{time}: temps en secondes
+			\item{num\_eval}: le nombre d'évaluations de l'algorithme avant de remplir une condition d'arrêt, de 0 à 100.
+		\end{enumerate}
 
-\subsubsection{Interprétations des résultats}
-Les résultats obtenus sont des moyennes de valeur trouvé par les itérations successive de l'algorithme.\\
-\begin{enumerate}
-	\item{ect}: l'écart type entre les solutions
-	\item{best\_score}: meilleur score associé à une solution obtenu
-	\item{time}: temps en secondes
-	\item{num\_eval}: le nombre d'évaluations de l'algorithme avant de remplir une condition d'arrêt, de 0 à 100.
-\end{enumerate}
+		\subsubsection{Comparaison avec l'énumération}
+		L'algorithme de descente de gradient nous permet de trouver des optimums locaux, en itérant cette algorithme avec une solution de départ aléatoire nous augmentons les chances de trouver l'optimum global, c'est pour cela que, sur les petits graphes, le meilleur score correspond au résultats de l'algorithme d'énumération.\\\\
+		Énumération: 20 Sommets en 2 classes : 160 secondes\\
+		Descente: 20 Sommets en 2 classes 100 itérations : 0.40 seconde\\
 
-\subsubsection{Comparaison avec l'énumération}
-L'algorithme de descente de gradient nous permet de trouver des optimums locaux, en itérant cette algorithme avec une solution de départ aléatoire nous augmentons les chances de trouver l'optimum global, c'est pour cela que, sur les petits graphes, le meilleur score correspond au résultats de l'algorithme d'énumération.\\\\
-Énumération: 20 Sommets en 2 classes : 160 secondes\\
-Descente: 20 Sommets en 2 classes 100 itérations : 0.40 seconde\\
+		Le score trouvé étant identique, l'algorithme de descente de gradient ce révèle plus performant, même si le résultat n'est pas forcément la solution optimale, le gain de temps n'est pas négligeable.\\
 
-Le score trouvé étant identique, l'algorithme de descente de gradient ce révèle plus performant, même si le résultat n'est pas forcément la solution optimale, le gain de temps n'est pas négligeable.\\
-
-\subsection{Recuit Simulé}
-
-\subsection{Méthode Tabou}
+	\subsection{Recuit Simulé}
+	
+	\subsection{Méthode Tabou}
 
 \section{Limites}
 
